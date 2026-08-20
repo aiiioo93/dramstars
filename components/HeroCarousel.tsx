@@ -31,7 +31,7 @@ export default function HeroCarousel({ images }: HeroCarouselProps) {
   };
 
   return (
-    <div className="relative min-h-0 overflow-hidden bg-black text-white">
+    <div className="relative h-full min-h-0 overflow-hidden bg-black text-white">
       {images.length > 0 ? (
         <>
           {images.map((image, index) => (
