@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { findPhoto, getSeriesGallery } from "@/lib/photo-files";
+import { getSeriesPhotos } from "@/lib/photo-files";
 import { photoSeries } from "@/lib/series";
 
 type SeriesPageProps = {
@@ -62,158 +62,311 @@ export default async function SeriesPage({
       (serieIndex + 1) % photoSeries.length
     ];
 
-  const coverPhoto = findPhoto(serie.acronym);
+  /*
+   * =========================================================
+   * PHOTOS DE LA SÉRIE ACTUELLE
+   * =========================================================
+   */
 
-  const galleryPhotos = getSeriesGallery(
+  const galleryPhotos = getSeriesPhotos(
     serie.acronym,
     serie.slug,
   );
 
+  /*
+   * =========================================================
+   * APERÇUS SÉRIE PRÉCÉDENTE / SUIVANTE
+   * =========================================================
+   */
+
+  const previousSeriePhotos = getSeriesPhotos(
+    previousSerie.acronym,
+    previousSerie.slug,
+  );
+
+  const nextSeriePhotos = getSeriesPhotos(
+    nextSerie.acronym,
+    nextSerie.slug,
+  );
+
+  const previousSeriePreview =
+    previousSeriePhotos.length > 0
+      ? previousSeriePhotos[0]
+      : null;
+
+  const nextSeriePreview =
+    nextSeriePhotos.length > 0
+      ? nextSeriePhotos[0]
+      : null;
+
   return (
-    <main className="bg-[#f4f3ef] text-black">
-      {/* HERO DE LA SÉRIE */}
-      <section className="mx-auto grid min-h-[calc(100svh-64px)] max-w-[1600px] lg:grid-cols-[0.75fr_1.25fr]">
-        {/* INFORMATIONS */}
-        <div className="flex flex-col justify-between border-b border-black p-5 md:p-10 lg:border-b-0 lg:border-r">
-          <div className="flex justify-between text-[9px] uppercase tracking-[0.16em]">
-            <span>
-              Série {serie.number} / 03
-            </span>
+    <main className="min-h-screen bg-[#f4f3ef] text-black">
+      {/* ================================================= */}
+      {/* EN-TÊTE MINIMAL */}
+      {/* ================================================= */}
 
-            <span>{serie.location}</span>
-          </div>
+      <section className="border-b border-black">
+        <div className="mx-auto max-w-[1600px] px-5 py-8 md:px-10 md:py-10">
+          <div className="flex items-start justify-between gap-8">
+            <div>
+              <p className="mb-3 text-[8px] uppercase tracking-[0.2em] text-black/45">
+                {serie.number} / 03 — {serie.acronym}
+              </p>
 
-          <div className="py-16 lg:py-10">
-            <span className="text-[10px] uppercase tracking-[0.2em]">
-              [{serie.acronym}]
-            </span>
-
-            <h1 className="mt-5 max-w-3xl text-[clamp(3.5rem,7vw,7rem)] font-bold uppercase leading-[0.82] tracking-[-0.075em]">
-              {serie.title}
-            </h1>
-          </div>
-
-          <div className="border-t border-black pt-5">
-            <p className="max-w-lg text-xs leading-6 md:text-sm md:leading-7">
-              {serie.description}
-            </p>
-          </div>
-        </div>
-
-        {/* PHOTO PRINCIPALE */}
-        <div className="relative min-h-[65svh] overflow-hidden bg-black lg:min-h-0">
-          {coverPhoto ? (
-            <Image
-              src={coverPhoto}
-              alt={`${serie.title} — La dramstars`}
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 65vw"
-              className="object-cover"
-            />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="-rotate-90 text-[10px] uppercase tracking-[0.3em] text-white/30">
-                Photographie à venir
-              </span>
+              <h1 className="max-w-4xl text-3xl font-bold uppercase leading-[0.9] tracking-[-0.06em] md:text-5xl">
+                {serie.title}
+              </h1>
             </div>
-          )}
 
-          <div className="absolute left-5 top-5 text-[9px] uppercase tracking-[0.16em] text-white md:left-8 md:top-8">
-            {serie.number} / {serie.acronym}
-          </div>
-
-          <div className="absolute bottom-5 left-5 right-5 flex justify-between border-t border-white/40 pt-3 text-[8px] uppercase tracking-[0.14em] text-white/70 md:bottom-8 md:left-8 md:right-8">
-            <span>LADRAMSTARS</span>
-            <span>{serie.location}</span>
+            <div className="hidden text-right text-[8px] uppercase leading-5 tracking-[0.17em] text-black/45 sm:block">
+              <p>{serie.location}</p>
+              <p>Photographie urbaine</p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* TEXTE */}
-      <section className="border-t border-white/20 bg-black px-5 py-20 text-[#f4f3ef] md:px-10 md:py-28">
-        <div className="mx-auto grid max-w-[1400px] gap-12 md:grid-cols-[0.55fr_1.45fr]">
-          <div className="text-[9px] uppercase leading-6 tracking-[0.18em] text-white/45">
+      {/* ================================================= */}
+      {/* PLANCHE CONTACT */}
+      {/* ================================================= */}
+
+      <section className="px-3 py-8 sm:px-5 md:py-12">
+        <div className="mx-auto max-w-[760px] lg:max-w-[820px]">
+          {galleryPhotos.length > 0 ? (
+            <>
+              {/* INFOS ARCHIVE */}
+
+              <div className="mb-3 flex items-center justify-between border-b border-black/20 pb-2 text-[7px] uppercase tracking-[0.18em] text-black/40">
+                <span>
+                  Archive / {serie.acronym}
+                </span>
+
+                <span>
+                  {String(galleryPhotos.length).padStart(
+                    2,
+                    "0",
+                  )}{" "}
+                  photographies
+                </span>
+              </div>
+
+              {/* ================================================= */}
+              {/* GALERIE */}
+              {/* ================================================= */}
+              {/* ORDRE : GAUCHE → DROITE */}
+
+              <div className="grid grid-cols-1 gap-[4px] sm:grid-cols-2 lg:grid-cols-3">
+                {galleryPhotos.map((photo, index) => (
+                  <Link
+                    key={photo.src}
+                    href={`/series/${
+                      serie.slug
+                    }/${encodeURIComponent(
+                      photo.slug,
+                    )}`}
+                    className="group relative block overflow-hidden bg-black"
+                  >
+                    {/* PHOTO */}
+
+                    <Image
+                      src={photo.src}
+                      alt={`${serie.title} — photographie ${
+                        index + 1
+                      }`}
+                      width={1200}
+                      height={1600}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 270px"
+                      className="h-auto w-full object-cover transition-all duration-500 ease-out group-hover:scale-[1.02] group-hover:opacity-90"
+                    />
+
+                    {/* PETIT REPÈRE ROUGE */}
+
+                    <span className="pointer-events-none absolute left-2 top-2 h-[6px] w-[6px] rounded-full bg-[#ff3b18]" />
+
+                    {/* VOILE AU HOVER */}
+
+                    <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/10" />
+
+                    {/* TEXTE CENTRAL AU HOVER */}
+
+                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                      <span className="translate-y-2 text-[8px] uppercase tracking-[0.18em] text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                        Voir la photographie →
+                      </span>
+                    </div>
+
+                    {/* NUMÉRO AU HOVER */}
+
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-2 pb-2 pt-8 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                      <span className="text-[7px] uppercase tracking-[0.16em] text-white/70">
+                        {serie.acronym} /{" "}
+                        {String(index + 1).padStart(
+                          3,
+                          "0",
+                        )}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </>
+          ) : (
+            /* ================================================= */
+            /* AUCUNE PHOTO */
+            /* ================================================= */
+
+            <div className="flex min-h-[60svh] items-center justify-center border border-black/20">
+              <div className="text-center">
+                <p className="text-[9px] uppercase tracking-[0.22em] text-black/35">
+                  Aucune photographie
+                </p>
+
+                <p className="mt-3 text-[8px] uppercase tracking-[0.15em] text-black/30">
+                  /Photos/series/{serie.slug}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ================================================= */}
+      {/* TEXTE DE LA SÉRIE */}
+      {/* ================================================= */}
+
+      <section className="border-t border-black bg-black px-5 py-16 text-[#f4f3ef] md:px-10 md:py-20">
+        <div className="mx-auto grid max-w-[1200px] gap-10 md:grid-cols-[180px_1fr]">
+          <div className="text-[8px] uppercase leading-5 tracking-[0.18em] text-white/40">
             <p>{serie.number} / 03</p>
             <p>{serie.acronym}</p>
             <p>{serie.location}</p>
-            <p>Photographie urbaine</p>
           </div>
 
-          <div>
-            <p className="max-w-4xl text-2xl font-bold leading-[1.15] tracking-[-0.04em] md:text-4xl">
-              {serie.description}
-            </p>
-          </div>
+          <p className="max-w-3xl text-xl font-bold leading-[1.25] tracking-[-0.035em] md:text-3xl">
+            {serie.description}
+          </p>
         </div>
       </section>
 
-      {/* GALERIE AUTOMATIQUE */}
-      {galleryPhotos.length > 0 && (
-        <section className="px-5 py-20 md:px-10 md:py-28">
-          <div className="mx-auto max-w-[1600px]">
-            <div className="mb-14 flex justify-between border-b border-black pb-4 text-[9px] uppercase tracking-[0.16em]">
-              <span>Photographies</span>
-              <span>
-                {String(galleryPhotos.length).padStart(2, "0")} images
-              </span>
-            </div>
-
-            <div className="grid gap-5 md:grid-cols-2">
-              {galleryPhotos.map((photo, index) => (
-                <div
-                  key={photo}
-                  className={`relative overflow-hidden bg-black ${
-                    index % 3 === 0
-                      ? "aspect-[4/5]"
-                      : "aspect-[3/2]"
-                  }`}
-                >
-                  <Image
-                    src={photo}
-                    alt={`${serie.title} — photographie ${index + 1}`}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover"
-                  />
-
-                  <span className="absolute bottom-3 right-3 bg-black/60 px-2 py-1 text-[8px] tracking-[0.15em] text-white">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
+      {/* ================================================= */}
       {/* NAVIGATION ENTRE LES SÉRIES */}
-      <nav className="border-t border-black">
-        <div className="mx-auto grid max-w-[1600px] md:grid-cols-2">
+      {/* ================================================= */}
+
+      <nav className="border-t border-black bg-[#f4f3ef]">
+        {/* TOUJOURS 2 BOUTONS SUR UNE LIGNE */}
+        <div className="mx-auto grid max-w-[1600px] grid-cols-2">
+          {/* ================================================= */}
+          {/* SÉRIE PRÉCÉDENTE */}
+          {/* ================================================= */}
+
           <Link
             href={`/series/${previousSerie.slug}`}
-            className="group border-b border-black p-6 transition-colors hover:bg-black hover:text-white md:border-b-0 md:border-r md:p-10"
+            className="group relative min-h-[140px] overflow-hidden border-r border-black p-4 text-black md:min-h-[250px] md:p-10"
           >
-            <span className="text-[9px] uppercase tracking-[0.16em] opacity-50">
-              ← Série précédente
-            </span>
+            {/* APERÇU PHOTO */}
 
-            <p className="mt-5 text-xl font-bold uppercase tracking-[-0.04em] md:text-2xl">
-              {previousSerie.title}
-            </p>
+            {previousSeriePreview && (
+              <Image
+                src={previousSeriePreview.src}
+                alt={`Aperçu ${previousSerie.title}`}
+                fill
+                sizes="50vw"
+                className="pointer-events-none object-cover opacity-0 grayscale transition-all duration-700 ease-out group-hover:scale-[1.025] group-hover:opacity-40 group-active:scale-[1.025] group-active:opacity-40"
+              />
+            )}
+
+            {/* OVERLAY BORDEAUX */}
+
+            <div className="pointer-events-none absolute inset-0 z-10 bg-[#713126]/0 transition-colors duration-500 ease-out group-hover:bg-[#713126]/85 group-active:bg-[#713126]/85" />
+
+            {/* DÉGRADÉ */}
+
+            <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-black/0 to-transparent transition-all duration-500 group-hover:from-black/25 group-active:from-black/25" />
+
+            {/* CONTENU */}
+
+            <div className="relative z-20 flex min-h-[108px] flex-col justify-between md:min-h-[170px]">
+              <div>
+                <span className="inline-block text-[7px] uppercase tracking-[0.14em] text-black/45 transition-all duration-500 group-hover:-translate-x-1 group-hover:text-white/65 group-active:-translate-x-1 group-active:text-white/65 md:text-[8px]">
+                  ← Précédente
+                </span>
+
+                <p className="mt-3 text-lg font-bold uppercase tracking-[-0.04em] text-black transition-colors duration-500 group-hover:text-white group-active:text-white md:mt-4 md:text-2xl">
+                  {previousSerie.acronym}
+                </p>
+
+                <p className="mt-1 line-clamp-2 text-[8px] leading-4 text-black/45 transition-colors duration-500 group-hover:text-white/60 group-active:text-white/60 md:text-[9px] md:uppercase md:tracking-[0.14em]">
+                  {previousSerie.title}
+                </p>
+              </div>
+
+              {/* DESCRIPTION TABLETTE / DESKTOP */}
+
+              <p className="hidden max-w-md translate-y-4 text-sm leading-6 text-white/85 opacity-0 transition-all duration-700 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-active:translate-y-0 group-active:opacity-100 md:block">
+                {previousSerie.description}
+              </p>
+            </div>
+
+            {/* PETIT POINT ROUGE */}
+
+            <span className="pointer-events-none absolute bottom-4 left-4 z-20 h-[5px] w-[5px] rounded-full bg-[#ff3b18] opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-active:opacity-100 md:bottom-10 md:left-10 md:h-[6px] md:w-[6px]" />
           </Link>
+
+          {/* ================================================= */}
+          {/* SÉRIE SUIVANTE */}
+          {/* ================================================= */}
 
           <Link
             href={`/series/${nextSerie.slug}`}
-            className="group p-6 text-right transition-colors hover:bg-black hover:text-white md:p-10"
+            className="group relative min-h-[140px] overflow-hidden p-4 text-right text-black md:min-h-[250px] md:p-10"
           >
-            <span className="text-[9px] uppercase tracking-[0.16em] opacity-50">
-              Série suivante →
-            </span>
+            {/* APERÇU PHOTO */}
 
-            <p className="mt-5 text-xl font-bold uppercase tracking-[-0.04em] md:text-2xl">
-              {nextSerie.title}
-            </p>
+            {nextSeriePreview && (
+              <Image
+                src={nextSeriePreview.src}
+                alt={`Aperçu ${nextSerie.title}`}
+                fill
+                sizes="50vw"
+                className="pointer-events-none object-cover opacity-0 grayscale transition-all duration-700 ease-out group-hover:scale-[1.025] group-hover:opacity-40 group-active:scale-[1.025] group-active:opacity-40"
+              />
+            )}
+
+            {/* OVERLAY BORDEAUX */}
+
+            <div className="pointer-events-none absolute inset-0 z-10 bg-[#713126]/0 transition-colors duration-500 ease-out group-hover:bg-[#713126]/85 group-active:bg-[#713126]/85" />
+
+            {/* DÉGRADÉ */}
+
+            <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-l from-black/0 to-transparent transition-all duration-500 group-hover:from-black/25 group-active:from-black/25" />
+
+            {/* CONTENU */}
+
+            <div className="relative z-20 flex min-h-[108px] flex-col items-end justify-between md:min-h-[170px]">
+              <div>
+                <span className="inline-block text-[7px] uppercase tracking-[0.14em] text-black/45 transition-all duration-500 group-hover:translate-x-1 group-hover:text-white/65 group-active:translate-x-1 group-active:text-white/65 md:text-[8px]">
+                  Suivante →
+                </span>
+
+                <p className="mt-3 text-lg font-bold uppercase tracking-[-0.04em] text-black transition-colors duration-500 group-hover:text-white group-active:text-white md:mt-4 md:text-2xl">
+                  {nextSerie.acronym}
+                </p>
+
+                <p className="mt-1 line-clamp-2 text-[8px] leading-4 text-black/45 transition-colors duration-500 group-hover:text-white/60 group-active:text-white/60 md:text-[9px] md:uppercase md:tracking-[0.14em]">
+                  {nextSerie.title}
+                </p>
+              </div>
+
+              {/* DESCRIPTION TABLETTE / DESKTOP */}
+
+              <p className="hidden max-w-md translate-y-4 text-sm leading-6 text-white/85 opacity-0 transition-all duration-700 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-active:translate-y-0 group-active:opacity-100 md:block">
+                {nextSerie.description}
+              </p>
+            </div>
+
+            {/* PETIT POINT ROUGE */}
+
+            <span className="pointer-events-none absolute bottom-4 right-4 z-20 h-[5px] w-[5px] rounded-full bg-[#ff3b18] opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-active:opacity-100 md:bottom-10 md:right-10 md:h-[6px] md:w-[6px]" />
           </Link>
         </div>
       </nav>

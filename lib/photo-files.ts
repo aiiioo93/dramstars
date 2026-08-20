@@ -8,6 +8,12 @@ type PhotoRoot = {
   publicPath: string;
 };
 
+export type SeriesPhoto = {
+  src: string;
+  slug: string;
+  filename: string;
+};
+
 export function getPhotoRoot(): PhotoRoot {
   const possibilities: PhotoRoot[] = [
     {
@@ -51,21 +57,10 @@ export function findPhoto(baseName: string): string | null {
   return `${root.publicPath}/${encodeURIComponent(file)}`;
 }
 
-export function getSeriesGallery(
-  acronym: string,
-  slug: string,
-): string[] {
+function getSeriesFolder(acronym: string, slug: string) {
   const root = getPhotoRoot();
 
   const folders = [
-    {
-      directory: path.join(root.directory, acronym),
-      publicPath: `${root.publicPath}/${acronym}`,
-    },
-    {
-      directory: path.join(root.directory, slug),
-      publicPath: `${root.publicPath}/${slug}`,
-    },
     {
       directory: path.join(root.directory, "series", slug),
       publicPath: `${root.publicPath}/series/${slug}`,
@@ -74,11 +69,26 @@ export function getSeriesGallery(
       directory: path.join(root.directory, "series", acronym),
       publicPath: `${root.publicPath}/series/${acronym}`,
     },
+    {
+      directory: path.join(root.directory, acronym),
+      publicPath: `${root.publicPath}/${acronym}`,
+    },
+    {
+      directory: path.join(root.directory, slug),
+      publicPath: `${root.publicPath}/${slug}`,
+    },
   ];
 
-  const folder = folders.find((item) =>
+  return folders.find((item) =>
     fs.existsSync(item.directory),
   );
+}
+
+export function getSeriesPhotos(
+  acronym: string,
+  slug: string,
+): SeriesPhoto[] {
+  const folder = getSeriesFolder(acronym, slug);
 
   if (!folder) {
     return [];
@@ -92,8 +102,37 @@ export function getSeriesGallery(
     .sort((a, b) =>
       a.localeCompare(b, undefined, { numeric: true }),
     )
-    .map(
-      (file) =>
-        `${folder.publicPath}/${encodeURIComponent(file)}`,
-    );
+    .map((file) => {
+      const extension = path.extname(file);
+
+      return {
+        src: `${folder.publicPath}/${encodeURIComponent(file)}`,
+        slug: path.basename(file, extension),
+        filename: file,
+      };
+    });
+}
+
+export function getSeriesGallery(
+  acronym: string,
+  slug: string,
+): string[] {
+  return getSeriesPhotos(acronym, slug).map(
+    (photo) => photo.src,
+  );
+}
+
+export function getSeriesPhoto(
+  acronym: string,
+  seriesSlug: string,
+  photoSlug: string,
+): SeriesPhoto | null {
+  const photos = getSeriesPhotos(acronym, seriesSlug);
+
+  return (
+    photos.find(
+      (photo) =>
+        photo.slug.toLowerCase() === photoSlug.toLowerCase(),
+    ) ?? null
+  );
 }
