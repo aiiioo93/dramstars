@@ -234,7 +234,7 @@ export default function Home() {
             </div>
 
             <Link
-              href="/a-propos"
+              href="/histoire"
               className="mt-10 w-fit border-b border-white/50 pb-1 text-[9px] uppercase tracking-[0.16em] text-white/60 transition-colors hover:border-white hover:text-white"
             >
               Lire mon histoire →

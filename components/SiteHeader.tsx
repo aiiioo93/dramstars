@@ -19,7 +19,7 @@ export default function SiteHeader() {
               href="/ou-je-suis"
               className="flex items-center gap-2 tracking-[0.08em] transition-opacity hover:opacity-60"
             >
-              Chapitre I — Où je suis
+              Où je suis
               <span className="text-[8px] transition-transform duration-300 group-hover:rotate-180">
                 ▼
               </span>
@@ -40,7 +40,7 @@ export default function SiteHeader() {
 
                 <div className="flex items-center justify-between border-y border-white/25 py-3 text-[8px] uppercase tracking-[0.22em] text-white/50">
                   <span>LADRAMSTARS</span>
-                  <span>Chapitre 01</span>
+
                   <span>35 mm</span>
                 </div>
 
@@ -93,7 +93,7 @@ export default function SiteHeader() {
           </div>
 
           <Link
-            href="/a-propos"
+            href="/histoire"
             className="tracking-[0.08em] transition-opacity hover:opacity-50"
           >
             À propos
@@ -132,7 +132,7 @@ export default function SiteHeader() {
             ))}
 
             <Link
-              href="/a-propos"
+              href="/histoire"
               className="block px-3 py-4 text-xs"
             >
               À propos
