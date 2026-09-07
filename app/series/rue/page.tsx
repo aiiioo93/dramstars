@@ -19,6 +19,23 @@ function formatGps(lat: number, lng: number) {
   return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
 }
 
+function getRecitOffsetClass(index: number) {
+  const mobile =
+    index % 2 === 1 ? "mt-[45%]" : "mt-0";
+
+  const tablet =
+    index % 3 === 1
+      ? "sm:mt-[45%]"
+      : "sm:mt-0";
+
+  const desktop =
+    index % 4 === 1 || index % 4 === 3
+      ? "lg:mt-[45%]"
+      : "lg:mt-0";
+
+  return `${mobile} ${tablet} ${desktop}`;
+}
+
 export default function RuePage() {
   if (!rueSerie) {
     return null;
@@ -78,11 +95,11 @@ export default function RuePage() {
 
           {rueRecits.length > 0 ? (
             <div className="grid grid-cols-2 gap-x-3 gap-y-10 sm:grid-cols-3 sm:gap-x-4 md:gap-y-14 lg:grid-cols-4 lg:gap-x-5">
-              {rueRecits.map((recit) => (
+              {rueRecits.map((recit, index) => (
                 <Link
                   key={recit.slug}
                   href={`/series/rue/${recit.slug}`}
-                  className="group block"
+                  className={`group block ${getRecitOffsetClass(index)}`}
                 >
                   <div className="relative aspect-[3/4] overflow-hidden bg-black">
                     <Image
