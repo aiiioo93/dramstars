@@ -263,20 +263,24 @@ export default function Home() {
       {/* ================================================= */}
 
       <section
-        id="madou"
-        className="border-t border-black bg-black px-5 py-20 text-[#f4f3ef] md:px-10 md:py-28"
-      >
-        <div className="mx-auto grid max-w-[1400px] gap-12 md:grid-cols-[0.75fr_1.25fr] md:gap-20 lg:gap-28">
-          {/* PORTRAIT */}
+      id="madou"
+      className="border-t border-black bg-black px-5 py-14 text-[#f4f3ef] md:px-10 md:py-28"
+    >
+      <div className="mx-auto grid max-w-[1400px] gap-8 md:grid-cols-[0.75fr_1.25fr] md:gap-20 lg:gap-28">
+        {/* ================================================= */}
+        {/* PORTRAIT */}
+        {/* MOBILE : PLUS PETIT / DESKTOP : INCHANGÉ */}
+        {/* ================================================= */}
 
-          <div>
+        <div>
+          <div className="mx-auto w-[72%] max-w-[270px] md:mx-0 md:w-auto md:max-w-none">
             <div className="relative aspect-[4/5] overflow-hidden border border-white/20 bg-[#111]">
               {profilePhoto ? (
                 <Image
                   src={profilePhoto}
                   alt="Portrait de Madou, photographe La dramstars"
                   fill
-                  sizes="(max-width: 768px) 100vw, 40vw"
+                  sizes="(max-width: 767px) 72vw, 40vw"
                   className="object-cover"
                 />
               ) : (
@@ -287,8 +291,10 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent px-4 pb-4 pt-24">
-                <div className="flex items-end justify-between gap-4 border-t border-white/30 pt-3 text-[8px] uppercase tracking-[0.15em] text-white/70">
+              {/* INFORMATIONS SUR LA PHOTO */}
+
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent px-3 pb-3 pt-16 md:px-4 md:pb-4 md:pt-24">
+                <div className="flex items-end justify-between gap-3 border-t border-white/30 pt-2.5 text-[7px] uppercase tracking-[0.14em] text-white/70 md:gap-4 md:pt-3 md:text-[8px] md:tracking-[0.15em]">
                   <span>
                     Madou
                     <br />
@@ -301,72 +307,70 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* BIOGRAPHIE */}
+            {/* REPÈRE SOUS PHOTO — MOBILE UNIQUEMENT */}
 
-          <div className="flex flex-col justify-center">
-            <p className="mb-10 max-w-3xl text-2xl font-bold leading-[1.15] tracking-[-0.04em] md:text-4xl">
-              Une rupture et une confrontation
-              directe avec deux mondes que je ne
-              connaissais pas.
-            </p>
+            <div className="mt-2 flex items-center justify-between md:hidden">
+              <span className="text-[6px] uppercase tracking-[0.2em] text-white/30">
+                Portrait / 84
+              </span>
 
-            <div className="max-w-3xl space-y-6 text-sm leading-7 text-white/65 md:text-base md:leading-8">
-              <p>
-                Je m&apos;appelle Madou et je
-                suis né en 1984. Je raconte mon
-                histoire. J&apos;ai vécu en
-                Seine-Saint-Denis jusqu&apos;à
-                mes 14 ans, puis mes parents ont
-                décidé de m&apos;envoyer vivre
-                au Sénégal, mon pays
-                d&apos;ascendance.
-              </p>
-
-              <p>
-                L&apos;intégration passe par une
-                longue phase d&apos;observation
-                réciproque. Je découvre alors
-                une nouvelle façon de vivre.
-              </p>
-
-              <p>
-                Je commence à documenter ma vie
-                avec des appareils photo
-                jetables envoyés par ma famille
-                restée en France. Cette période
-                m&apos;a façonné et, à mon
-                retour en Seine-Saint-Denis, je
-                continue à photographier.
-              </p>
-
-              <p>
-                Après un premier parcours
-                professionnel fait de petits
-                jobs, en 2009 je deviens
-                animateur socioculturel tout en
-                développant un travail
-                photographique autobiographique.
-              </p>
-
-              <p>
-                Mon travail est essentiellement
-                axé sur les questions
-                identitaires en banlieue et
-                ailleurs.
-              </p>
+              <span className="h-[5px] w-[5px] rounded-full bg-[#ff3b18]" />
             </div>
-
-            <Link
-              href="/histoire"
-              className="mt-10 w-fit border-b border-white/50 pb-1 text-[9px] uppercase tracking-[0.16em] text-white/60 transition-colors hover:border-white hover:text-white"
-            >
-              Lire mon histoire →
-            </Link>
           </div>
         </div>
-      </section>
+
+        {/* ================================================= */}
+        {/* BIOGRAPHIE */}
+        {/* ================================================= */}
+
+        <div className="flex flex-col justify-center">
+          <p className="mb-7 max-w-3xl text-xl font-bold leading-[1.18] tracking-[-0.035em] md:mb-10 md:text-4xl md:leading-[1.15] md:tracking-[-0.04em]">
+            Une rupture et une confrontation directe avec deux mondes que je ne
+            connaissais pas.
+          </p>
+
+          <div className="max-w-3xl space-y-5 text-[13px] leading-6 text-white/65 [text-align:justify] md:space-y-6 md:text-left md:text-base md:leading-8">
+            <p>
+              Je m&apos;appelle Madou et je suis né en 1984. Je raconte mon
+              histoire. J&apos;ai vécu en Seine-Saint-Denis jusqu&apos;à mes
+              14 ans, puis mes parents ont décidé de m&apos;envoyer vivre au
+              Sénégal, mon pays d&apos;ascendance.
+            </p>
+
+            <p>
+              L&apos;intégration passe par une longue phase d&apos;observation
+              réciproque. Je découvre alors une nouvelle façon de vivre.
+            </p>
+
+            <p>
+              Je commence à documenter ma vie avec des appareils photo
+              jetables envoyés par ma famille restée en France. Cette période
+              m&apos;a façonné et, à mon retour en Seine-Saint-Denis, je
+              continue à photographier.
+            </p>
+
+            <p>
+              Après un premier parcours professionnel fait de petits jobs, en
+              2009 je deviens animateur socioculturel tout en développant un
+              travail photographique autobiographique.
+            </p>
+
+            <p>
+              Mon travail est essentiellement axé sur les questions
+              identitaires en banlieue et ailleurs.
+            </p>
+          </div>
+
+          <Link
+            href="/histoire"
+            className="mt-8 w-fit border-b border-white/50 pb-1 text-[8px] uppercase tracking-[0.17em] text-white/60 transition-colors hover:border-white hover:text-white md:mt-10 md:text-[9px] md:tracking-[0.16em]"
+          >
+            Lire mon histoire →
+          </Link>
+        </div>
+      </div>
+    </section>
 
       {/* ================================================= */}
       {/* LES 3 SÉRIES */}
