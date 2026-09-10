@@ -15,10 +15,6 @@ export const metadata = {
     "Les personnes photographiées choisissent le lieu et racontent leur rapport à leur environnement.",
 };
 
-function formatGps(lat: number, lng: number) {
-  return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-}
-
 function getRecitOffsetClass(index: number) {
   const mobile =
     index % 2 === 1 ? "mt-[45%]" : "mt-0";
@@ -74,22 +70,47 @@ export default function RuePage() {
 
       <section className="px-3 py-8 sm:px-5 md:px-10 md:py-12">
         <div className="mx-auto max-w-[1400px]">
-          <div className="mb-8 flex items-end justify-between border-b border-black/20 pb-3">
-            <div>
-              <p className="text-[7px] uppercase tracking-[0.18em] text-black/40">
-                Archive / {rueSerie.acronym}
-              </p>
+          <div className="mb-8 grid gap-3 border-b border-black/20 pb-5 sm:grid-cols-[1fr_auto] sm:items-end">
+            <div className="flex items-end gap-4">
+              <span className="text-4xl font-bold leading-none tracking-[-0.08em] md:text-5xl">
+                {String(rueRecits.length).padStart(2, "0")}
+              </span>
 
-              <p className="mt-2 text-[7px] uppercase tracking-[0.18em] text-black/40">
-                {String(rueRecits.length).padStart(2, "0")} récits
-              </p>
+              <div className="pb-0.5">
+                <p className="text-xs font-bold uppercase tracking-[0.12em]">
+                  Récits publiés
+                </p>
+
+                <p className="mt-1 text-[7px] uppercase tracking-[0.18em] text-black/40">
+                  Archive / {rueSerie.acronym}
+                </p>
+              </div>
             </div>
 
             <Link
               href="/series/rue/carte"
-              className="text-[7px] uppercase tracking-[0.18em] text-black/50 transition-opacity duration-300 hover:opacity-50"
+              className="group/map flex w-fit min-h-12 justify-self-end items-center justify-between gap-5 border border-black bg-[#d8d4ca] px-3 py-2.5 text-black transition-colors duration-300 hover:bg-[#ff3b18] sm:min-h-14 sm:min-w-[250px] sm:gap-8 sm:px-4 sm:py-3"
             >
-              Voir la carte →
+              <span className="flex items-center gap-3">
+                <span className="relative flex h-3 w-3 items-center justify-center">
+                  <span className="absolute h-full w-full rounded-full border border-[#ff3b18] transition-colors motion-safe:animate-ping group-hover/map:border-black" />
+                  <span className="relative h-[6px] w-[6px] rounded-full bg-[#ff3b18] transition-colors group-hover/map:bg-black" />
+                </span>
+
+                <span>
+                  <span className="block text-[6px] uppercase tracking-[0.18em] text-black/55 transition-colors group-hover/map:text-black/60 sm:text-[7px] sm:tracking-[0.2em]">
+                    Psychogéographie
+                  </span>
+
+                  <span className="mt-1 block text-xs font-bold uppercase tracking-[0.08em]">
+                    Voir la carte
+                  </span>
+                </span>
+              </span>
+
+              <span className="text-lg transition-transform duration-300 group-hover/map:translate-x-1.5">
+                →
+              </span>
             </Link>
           </div>
 
@@ -125,12 +146,26 @@ export default function RuePage() {
                       {recit.personne}
                     </p>
 
-                    <p className="mt-1 text-[7px] uppercase tracking-[0.15em] text-black/45 md:text-[8px]">
-                      {formatGps(
-                        recit.gps.lat,
-                        recit.gps.lng,
-                      )}
-                    </p>
+                    <div className="mt-3 flex items-center gap-2.5 border-t border-black/20 pt-2.5">
+                      <span className="relative flex h-2.5 w-2.5 shrink-0 items-center justify-center">
+                        <span className="absolute h-full w-full rounded-full border border-[#ff3b18]/60 motion-safe:animate-ping" />
+                        <span className="relative h-[5px] w-[5px] rounded-full bg-[#ff3b18]" />
+                      </span>
+
+                      <p className="flex min-w-0 items-baseline whitespace-nowrap text-[13px] font-bold leading-none text-black sm:text-sm md:text-base">
+                        <span className="rue-coordinate-number">
+                          {recit.gps.lat.toFixed(4)}
+                        </span>
+
+                        <span className="mx-1 text-[#ff3b18]">
+                          ,
+                        </span>
+
+                        <span className="rue-coordinate-number [animation-delay:450ms]">
+                          {recit.gps.lng.toFixed(4)}
+                        </span>
+                      </p>
+                    </div>
                   </div>
                 </Link>
               ))}

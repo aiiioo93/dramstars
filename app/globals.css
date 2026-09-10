@@ -35,3 +35,39 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+@keyframes rue-coordinate-signal {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: translateY(0);
+    letter-spacing: 0.025em;
+    text-shadow: 0 0 0 transparent;
+  }
+
+  48% {
+    opacity: 1;
+    transform: translateY(-1px);
+    letter-spacing: 0.075em;
+    text-shadow: 0 0 12px rgb(255 59 24 / 22%);
+  }
+
+  58% {
+    opacity: 1;
+    transform: translateY(0);
+    letter-spacing: 0.045em;
+  }
+}
+
+.rue-coordinate-number {
+  display: inline-block;
+  animation: rue-coordinate-signal 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rue-coordinate-number {
+    animation: none;
+    opacity: 1;
+    letter-spacing: 0.04em;
+  }
+}

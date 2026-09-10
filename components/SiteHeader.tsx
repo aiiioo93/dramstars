@@ -15,9 +15,13 @@ type MobileSection =
   | null;
 
 export default function SiteHeader() {
+  const desktopMenuRef =
+    useRef<HTMLDivElement>(null);
   const mobileMenuRef =
     useRef<HTMLDetailsElement>(null);
 
+  const [desktopMenuOpen, setDesktopMenuOpen] =
+    useState(false);
   const [mobileSection, setMobileSection] =
     useState<MobileSection>(null);
 
@@ -26,14 +30,21 @@ export default function SiteHeader() {
       event: PointerEvent,
     ) => {
       const menu = mobileMenuRef.current;
-
-      if (!menu || !menu.open) {
-        return;
-      }
-
+      const desktopMenu = desktopMenuRef.current;
       const target = event.target as Node;
 
-      if (!menu.contains(target)) {
+      if (
+        desktopMenuOpen &&
+        desktopMenu &&
+        !desktopMenu.contains(target)
+      ) {
+        setDesktopMenuOpen(false);
+      }
+
+      if (
+        menu?.open &&
+        !menu.contains(target)
+      ) {
         menu.open = false;
         setMobileSection(null);
       }
@@ -43,10 +54,14 @@ export default function SiteHeader() {
       event: KeyboardEvent,
     ) => {
       if (
-        event.key === "Escape" &&
-        mobileMenuRef.current?.open
+        event.key === "Escape"
       ) {
-        mobileMenuRef.current.open = false;
+        setDesktopMenuOpen(false);
+
+        if (mobileMenuRef.current) {
+          mobileMenuRef.current.open = false;
+        }
+
         setMobileSection(null);
       }
     };
@@ -72,7 +87,7 @@ export default function SiteHeader() {
         handleEscape,
       );
     };
-  }, []);
+  }, [desktopMenuOpen]);
 
   const closeMobileMenu = () => {
     if (mobileMenuRef.current) {
@@ -112,24 +127,50 @@ export default function SiteHeader() {
         {/* ================================================= */}
 
         <nav className="hidden h-full items-center gap-8 text-xs md:flex">
-          <div className="group relative flex h-full items-center">
-            <Link
-              href="/ou-je-suis"
+          <div
+            ref={desktopMenuRef}
+            className="group relative flex h-full items-center"
+          >
+            <button
+              type="button"
+              aria-expanded={desktopMenuOpen}
+              aria-controls="desktop-explorer-menu"
+              onClick={() =>
+                setDesktopMenuOpen((open) => !open)
+              }
               className="flex items-center gap-2 tracking-[0.08em] transition-opacity duration-300 hover:opacity-60"
             >
               Explorer
 
-              <span className="text-[8px] transition-transform duration-300 group-hover:rotate-180">
+              <span
+                className={`text-[8px] transition-transform duration-300 group-hover:rotate-180 ${
+                  desktopMenuOpen ? "rotate-180" : ""
+                }`}
+              >
                 ↓
               </span>
-            </Link>
+            </button>
 
             {/* ================================================= */}
             {/* DROPDOWN DESKTOP */}
             {/* ================================================= */}
 
-            <div className="pointer-events-none absolute right-0 top-full w-[560px] pt-2 opacity-0 transition-all duration-300 group-hover:pointer-events-auto group-hover:opacity-100">
-              <div className="translate-y-2 border border-black bg-[#f4f3ef] p-3 text-black shadow-[12px_12px_0_rgba(0,0,0,0.16)] transition-transform duration-300 group-hover:translate-y-0">
+            <div
+              id="desktop-explorer-menu"
+              onClick={() => setDesktopMenuOpen(false)}
+              className={`absolute right-0 top-full w-[560px] pt-2 transition-all duration-300 group-hover:pointer-events-auto group-hover:opacity-100 ${
+                desktopMenuOpen
+                  ? "pointer-events-auto opacity-100"
+                  : "pointer-events-none opacity-0"
+              }`}
+            >
+              <div
+                className={`border border-black bg-[#f4f3ef] p-3 text-black shadow-[12px_12px_0_rgba(0,0,0,0.16)] transition-transform duration-300 group-hover:translate-y-0 ${
+                  desktopMenuOpen
+                    ? "translate-y-0"
+                    : "translate-y-2"
+                }`}
+              >
                 {/* PERFORATIONS */}
 
                 <div className="mb-3 flex justify-between">
