@@ -165,7 +165,7 @@ export default function SiteHeader() {
               }`}
             >
               <div
-                className={`border border-black bg-[#f4f3ef] p-3 text-black shadow-[12px_12px_0_rgba(0,0,0,0.16)] transition-transform duration-300 group-hover:translate-y-0 ${
+                className={`border border-black bg-[#d8d4ca] p-3 text-black shadow-[12px_12px_0_rgba(0,0,0,0.16)] transition-transform duration-300 group-hover:translate-y-0 ${
                   desktopMenuOpen
                     ? "translate-y-0"
                     : "translate-y-2"
@@ -278,7 +278,7 @@ export default function SiteHeader() {
 
                     <Link
                       href="/d-ou-je-viens"
-                      className="group/origin relative block min-h-[124px] overflow-hidden border border-black/15 p-3 transition-colors duration-300 hover:bg-[#713126]"
+                      className="group/origin relative block min-h-[124px] overflow-hidden border border-black/15 p-3 transition-colors duration-300 hover:bg-black"
                     >
                       <span className="text-[7px] uppercase tracking-[0.18em] text-black/35 transition-colors group-hover/origin:text-white/40">
                         02 / Origines
@@ -293,25 +293,6 @@ export default function SiteHeader() {
                       </div>
 
                       <span className="absolute right-3 top-3 h-[6px] w-[6px] rounded-full bg-[#ff3b18]" />
-                    </Link>
-
-                    <Link
-                      href="/d-ou-je-viens/lettre"
-                      className="group/letter mt-2 flex items-center justify-between border border-black/15 px-3 py-3 transition-colors duration-300 hover:bg-black"
-                    >
-                      <div>
-                        <span className="block text-[7px] uppercase tracking-[0.18em] text-black/35 transition-colors group-hover/letter:text-white/40">
-                          Document
-                        </span>
-
-                        <span className="mt-1 block text-[11px] font-bold transition-colors group-hover/letter:text-white">
-                          La lettre
-                        </span>
-                      </div>
-
-                      <span className="transition-all duration-300 group-hover/letter:translate-x-1 group-hover/letter:text-white">
-                        →
-                      </span>
                     </Link>
 
                     <Link
@@ -399,7 +380,7 @@ export default function SiteHeader() {
           {/* PANNEAU MOBILE */}
           {/* ================================================= */}
 
-          <div className="absolute right-0 top-12 w-[min(91vw,350px)] origin-top-right border border-black bg-[#f4f3ef] p-3 text-black shadow-[8px_8px_0_rgba(0,0,0,0.18)]">
+          <div className="absolute right-0 top-12 w-[min(91vw,350px)] origin-top-right border border-black bg-[#d8d4ca] p-3 text-black shadow-[8px_8px_0_rgba(0,0,0,0.18)]">
             {/* PERFORATIONS */}
 
             <div className="mb-2 flex justify-between">
@@ -578,11 +559,11 @@ export default function SiteHeader() {
               </button>
 
               {mobileSection === "chapter" && (
-                <div className="grid grid-cols-2 gap-1.5 px-2 pb-3">
+                <div className="px-2 pb-3">
                   <Link
                     href="/d-ou-je-viens"
                     onClick={closeMobileMenu}
-                    className="relative min-h-[70px] border border-black bg-[#713126] p-2.5 text-white"
+                    className="relative block min-h-[70px] border border-black bg-black p-2.5 text-white"
                   >
                     <span className="text-[6px] uppercase tracking-[0.16em] text-white/45">
                       Chapitre II
@@ -595,19 +576,6 @@ export default function SiteHeader() {
                     <span className="absolute right-2.5 top-2.5 h-[5px] w-[5px] rounded-full bg-[#ff3b18]" />
                   </Link>
 
-                  <Link
-                    href="/d-ou-je-viens/lettre"
-                    onClick={closeMobileMenu}
-                    className="relative min-h-[70px] border border-black/15 p-2.5 active:bg-black active:text-white"
-                  >
-                    <span className="text-[6px] uppercase tracking-[0.16em] text-black/35">
-                      Document
-                    </span>
-
-                    <span className="absolute bottom-2.5 left-2.5 text-[11px] font-bold">
-                      La lettre
-                    </span>
-                  </Link>
                 </div>
               )}
             </div>

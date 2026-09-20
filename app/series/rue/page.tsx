@@ -71,21 +71,9 @@ export default function RuePage() {
       <section className="px-3 py-8 sm:px-5 md:px-10 md:py-12">
         <div className="mx-auto max-w-[1400px]">
           <div className="mb-8 grid gap-3 border-b border-black/20 pb-5 sm:grid-cols-[1fr_auto] sm:items-end">
-            <div className="flex items-end gap-4">
-              <span className="text-4xl font-bold leading-none tracking-[-0.08em] md:text-5xl">
-                {String(rueRecits.length).padStart(2, "0")}
-              </span>
-
-              <div className="pb-0.5">
-                <p className="text-xs font-bold uppercase tracking-[0.12em]">
-                  Récits publiés
-                </p>
-
-                <p className="mt-1 text-[7px] uppercase tracking-[0.18em] text-black/40">
-                  Archive / {rueSerie.acronym}
-                </p>
-              </div>
-            </div>
+            <p className="text-[7px] uppercase tracking-[0.18em] text-black/40">
+              Archive / {rueSerie.acronym}
+            </p>
 
             <Link
               href="/series/rue/carte"
@@ -122,7 +110,7 @@ export default function RuePage() {
                   href={`/series/rue/${recit.slug}`}
                   className={`group block ${getRecitOffsetClass(index)}`}
                 >
-                  <div className="relative aspect-[3/4] overflow-hidden bg-black">
+                  <div className="relative aspect-[3/4] overflow-hidden bg-[#dedbd2]">
                     <Image
                       src={`/Photos/series/rue/${recit.slug}/${recit.couverture}`}
                       alt={
@@ -133,7 +121,7 @@ export default function RuePage() {
                       }
                       fill
                       sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      className="object-cover transition-all duration-700 ease-out group-hover:scale-[1.02] group-hover:opacity-90"
+                      className="object-cover transition-opacity duration-700 ease-out group-hover:opacity-90"
                     />
 
                     <span className="pointer-events-none absolute left-2 top-2 h-[6px] w-[6px] rounded-full bg-[#ff3b18]" />
@@ -146,26 +134,6 @@ export default function RuePage() {
                       {recit.personne}
                     </p>
 
-                    <div className="mt-3 flex items-center gap-2.5 border-t border-black/20 pt-2.5">
-                      <span className="relative flex h-2.5 w-2.5 shrink-0 items-center justify-center">
-                        <span className="absolute h-full w-full rounded-full border border-[#ff3b18]/60 motion-safe:animate-ping" />
-                        <span className="relative h-[5px] w-[5px] rounded-full bg-[#ff3b18]" />
-                      </span>
-
-                      <p className="flex min-w-0 items-baseline whitespace-nowrap text-[13px] font-bold leading-none text-black sm:text-sm md:text-base">
-                        <span className="rue-coordinate-number">
-                          {recit.gps.lat.toFixed(4)}
-                        </span>
-
-                        <span className="mx-1 text-[#ff3b18]">
-                          ,
-                        </span>
-
-                        <span className="rue-coordinate-number [animation-delay:450ms]">
-                          {recit.gps.lng.toFixed(4)}
-                        </span>
-                      </p>
-                    </div>
                   </div>
                 </Link>
               ))}

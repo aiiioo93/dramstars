@@ -153,15 +153,44 @@ export default async function RueRecitPage({
                   }
                 >
                   <div className="relative overflow-hidden bg-black">
-                    <Image
-                      src={`/Photos/series/rue/${recit.slug}/${photo.src}`}
-                      alt={photo.alt}
-                      width={1600}
-                      height={2000}
-                      sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 1200px"
-                      className="h-auto w-full object-cover"
-                      priority={index === 0}
-                    />
+                    {photo.type === "video" ? (
+                      <video
+                        aria-label={photo.alt}
+                        poster={
+                          photo.poster
+                            ? `/Photos/series/rue/${recit.slug}/${photo.poster}`
+                            : undefined
+                        }
+                        autoPlay={photo.autoPlay}
+                        controls={!photo.autoPlay}
+                        loop
+                        muted
+                        playsInline
+                        preload="metadata"
+                        className="h-auto w-full"
+                      >
+                        {photo.webmSrc && (
+                          <source
+                            src={`/Photos/series/rue/${recit.slug}/${photo.webmSrc}`}
+                            type="video/webm"
+                          />
+                        )}
+                        <source
+                          src={`/Photos/series/rue/${recit.slug}/${photo.src}`}
+                          type="video/mp4"
+                        />
+                      </video>
+                    ) : (
+                      <Image
+                        src={`/Photos/series/rue/${recit.slug}/${photo.src}`}
+                        alt={photo.alt}
+                        width={1600}
+                        height={2000}
+                        sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 1200px"
+                        className="h-auto w-full object-cover"
+                        priority={index === 0}
+                      />
+                    )}
 
                     <span className="absolute left-3 top-3 h-[6px] w-[6px] rounded-full bg-[#ff3b18]" />
                   </div>

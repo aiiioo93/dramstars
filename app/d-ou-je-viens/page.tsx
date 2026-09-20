@@ -168,7 +168,7 @@ export default function DOuJeViensPage() {
               key={section.id}
               className={
                 isSilence
-                  ? "relative flex min-h-[90svh] items-center border-t border-white/20 bg-black px-5 py-24 text-[#f4f3ef] md:px-10 md:py-32"
+                  ? "relative flex min-h-[120svh] items-center border-t border-black/15 bg-[#f4f3ef] px-5 py-36 text-black md:px-10 md:py-48"
                   : "relative border-t border-black px-5 py-20 md:px-10 md:py-28"
               }
             >
@@ -178,7 +178,7 @@ export default function DOuJeViensPage() {
                 <div
                   className={`mb-12 flex items-center justify-between text-[7px] uppercase tracking-[0.2em] ${
                     isSilence
-                      ? "text-white/30"
+                      ? "text-black/25"
                       : "text-black/35"
                   }`}
                 >
@@ -201,18 +201,12 @@ export default function DOuJeViensPage() {
                   {/* GRANDE DATE */}
 
                   <div>
-                    <h2
-                      className={`text-[15vw] font-bold uppercase leading-[0.72] tracking-[-0.08em] lg:text-[7vw] ${
-                        isSilence
-                          ? "text-white"
-                          : "text-black"
-                      }`}
-                    >
+                    <h2 className="text-[15vw] font-bold uppercase leading-[0.72] tracking-[-0.08em] text-black lg:text-[7vw]">
                       {section.periode}
                     </h2>
 
                     {isSilence && (
-                      <p className="mt-8 text-[8px] uppercase tracking-[0.22em] text-white/30">
+                      <p className="mt-8 text-[8px] uppercase tracking-[0.22em] text-black/25">
                         Le silence
                       </p>
                     )}
@@ -225,7 +219,7 @@ export default function DOuJeViensPage() {
                       <div
                         className={`max-w-3xl space-y-8 ${
                           isSilence
-                            ? "text-white/75"
+                            ? "text-black/60"
                             : "text-black/70"
                         }`}
                       >
@@ -250,11 +244,7 @@ export default function DOuJeViensPage() {
                           href={
                             section.lienInterne.href
                           }
-                          className={`group inline-flex items-center gap-4 border-b pb-2 text-[9px] uppercase tracking-[0.22em] transition-opacity duration-300 hover:opacity-50 ${
-                            isSilence
-                              ? "border-white/30 text-white"
-                              : "border-black/30 text-black"
-                          }`}
+                          className="group inline-flex items-center gap-4 border-b border-black/30 pb-2 text-[9px] uppercase tracking-[0.22em] text-black transition-opacity duration-300 hover:opacity-50"
                         >
                           <span className="h-[6px] w-[6px] rounded-full bg-[#ff3b18]" />
 
@@ -308,7 +298,7 @@ export default function DOuJeViensPage() {
                 {/* GRAND REPÈRE DE FOND SUR SILENCE */}
 
                 {isSilence && (
-                  <div className="pointer-events-none absolute bottom-6 right-5 text-[16vw] font-bold leading-none tracking-[-0.08em] text-white/[0.025] md:right-10">
+                  <div className="pointer-events-none absolute bottom-6 right-5 text-[16vw] font-bold leading-none tracking-[-0.08em] text-black/[0.025] md:right-10">
                     12 ANS
                   </div>
                 )}
