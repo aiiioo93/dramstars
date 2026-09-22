@@ -52,8 +52,10 @@ export const rueRecits: RueRecit[] = [
     personne: "Gueulle Grande",
     gps: {
       lat: 48.8723,
-      lng: 2.5677,
+      lng: 2.5678,
     },
+    date: "4 mai 2023",
+    heure: "21:13",
     parole: [
       "La force et le mental peuvent te permettre d'avoir un “regain” d'énergie qui vont te permettre de te relever et affronter les aléas de la vie.",
     ],
@@ -68,6 +70,8 @@ export const rueRecits: RueRecit[] = [
       lat: 48.9468,
       lng: 2.5110,
     },
+    date: "10 février 2023",
+    heure: "21:39",
     parole: [
       "Le début d'une fin. On s'éloigne de l'obscurité pour quitter nos rues. Nos fenêtres ne sont pas nos seules échappatoires.",
     ],
@@ -82,11 +86,13 @@ export const rueRecits: RueRecit[] = [
       lat: 48.9499,
       lng: 2.5266,
     },
+    date: "11 février 2023",
+    heure: "18:31",
     parole: [
       "Sevran c'est ma maison, la ou j'ai grandis, la ou je me sens bien . Même une fois partie, je viendrais toujours d'ici.",
     ],
     couverture: "cover.jpg",
-    couvertureFit: "cover",
+    couvertureFit: "contain",
     photos: createPhotos("Kix.ra", 4),
   },
   {
@@ -96,13 +102,15 @@ export const rueRecits: RueRecit[] = [
       lat: 48.9521,
       lng: 2.5106,
     },
+    date: "11 février 2023",
+    heure: "21:27",
     parole: [
       "Ce parc je l’ai fréquenté toute ma jeunesse, juste pour le terrain de basket, je jouais avec des monstres et j’avais un très mauvais niveau mais ils avait du respect pour moi malgré mon niveau",
       "Arrivé ici en 1998 en plein de milieu de la coupe du monde, je comprenais pas pourquoi on avait quitté notre studio pour vivre ici, finalement c’était pas si mal d’être dans ce quartier",
       "Il y avait toujours un truc qui se passait devant ce grillage, des embrouilles qui s’enveniment, des amours qui grandissent et des amitiés qui durerons.",
     ],
     couverture: "cover.jpg",
-    couvertureFit: "cover",
+    couvertureFit: "contain",
     photos: createPhotos("Ohdaesho", 4),
   },
   {
@@ -112,12 +120,22 @@ export const rueRecits: RueRecit[] = [
       lat: 48.9483,
       lng: 2.5239,
     },
+    date: "13 février 2023",
+    heure: "18:53",
     parole: [
       "Derrière moi la lumière place Nelson Mandela et d’une apparence fantômale, Marcel Paul est le témoin du quartier.",
     ],
     couverture: "cover.jpg",
-    couvertureFit: "cover",
-    photos: createPhotos("Piksoo Koko Caramelo", 14),
+    couvertureFit: "contain",
+    photos: [
+      {
+        type: "video",
+        src: "koko-2.mp4",
+        alt: "Piksoo Koko Caramelo — série RUE — vidéo",
+        autoPlay: true,
+      },
+      ...createPhotos("Piksoo Koko Caramelo", 14),
+    ],
   },
   {
     slug: "s-m-e-g-o",
@@ -126,6 +144,8 @@ export const rueRecits: RueRecit[] = [
       lat: 48.9460,
       lng: 2.5088,
     },
+    date: "14 février 2023",
+    heure: "20:17",
     parole: [
       "Ces rues, j’ai eu le temps de les emprunter un milliard de fois. C'est les dernières lignes droites avant chez moi et où j’ai si souvent croisé des visages familiers.",
     ],
@@ -140,11 +160,13 @@ export const rueRecits: RueRecit[] = [
       lat: 48.9495,
       lng: 2.5080,
     },
+    date: "20 février 2023",
+    heure: "19:14",
     parole: [
       "Douze comme le nombre de l’horloge et les nombreuses heures passées ici à refaire le Monde ”",
     ],
     couverture: "cover.jpg",
-    couvertureFit: "cover",
+    couvertureFit: "contain",
     photos: createPhotos("Nakmuay Issa", 3),
   },
   {
@@ -154,11 +176,13 @@ export const rueRecits: RueRecit[] = [
       lat: 48.8958,
       lng: 2.3969,
     },
+    date: "24 février 2023",
+    heure: "19:58",
     parole: [
       "Entre deux rives: imaginez le passage entre deux mondes, deux réalités, avec le désir ardent d'aller au-delà de ce qui a été pour vous par d’autres.",
     ],
     couverture: "cover.jpg",
-    couvertureFit: "cover",
+    couvertureFit: "contain",
     photos: createPhotos("Lila Bim", 5),
   },
   {
@@ -168,27 +192,31 @@ export const rueRecits: RueRecit[] = [
       lat: 48.9488,
       lng: 2.5086,
     },
+    date: "25 février 2023",
+    heure: "20:54",
     parole: [
       "Cette rue est remplie de souvenirs d’enfance, où la joie et la peine se mélangent constamment. La fierté et la culture s’épanouissent au gré des rencontres et des histoires.",
     ],
     couverture: "cover.jpg",
-    couvertureFit: "cover",
+    couvertureFit: "contain",
     photos: createPhotos("Them Them", 3),
   },
   {
     slug: "chrystelle-arnaud",
     personne: "Chrystelle Arnaud",
     gps: {
-      lat: 48.8720,
-      lng: 2.3316,
+      lat: 48.8636,
+      lng: 2.3354,
     },
+    date: "28 février 2023",
+    heure: "19:31",
     parole: [
       "L'avenue de l'Opéra est la rue de Paris qui me procure le plus d'émotions artistiques. Elle me fait voyager à travers les Arts, d'un côté l'Opéra Garnier et de l'autre le Musée du Louvre, en passant par la Comédie française.",
       "J'ai eu beaucoup de plaisir à découvrir le Louvre et ses galeries lors d'une première visite parisienne mais mon plaisir fut encore plus grand lorsque j'ai découvert le plafond de l'Opéra peint par Chagall quand je suis venue m'installer à Paris.",
       "Depuis, je pense à tous ces chefs-d'œuvre à chaque fois que je passe sur l'avenue de l'Opéra.",
     ],
     couverture: "cover.jpg",
-    couvertureFit: "cover",
+    couvertureFit: "contain",
     photos: createPhotos("Chrystelle Arnaud", 6),
   },
   {
@@ -198,11 +226,13 @@ export const rueRecits: RueRecit[] = [
       lat: 48.9542,
       lng: 2.3283,
     },
+    date: "2 mars 2023",
+    heure: "20:02",
     parole: [
       "La nuit dans la street, j'ai souvent marché seule parce que les rues sont désertes, silencieuses et tranquilles. Mais dans ta tête, t'es jamais tranquille parce que la rue ça rend fou, ça rend triste ; et en même temps, ça te rend heureux, pourquoi ? Parce que tu connais rien d'autre.",
     ],
     couverture: "cover.jpg",
-    couvertureFit: "cover",
+    couvertureFit: "contain",
     photos: createPhotos("Manela Alma V", 4),
   },
   {
@@ -212,6 +242,8 @@ export const rueRecits: RueRecit[] = [
       lat: 48.9491,
       lng: 2.5099,
     },
+    date: "9 avril 2023",
+    heure: "22:15",
     parole: [
       "9 rue du Dauphiné. Des amis, des copains , la croisée des chemins … un jour il a fallut partir , mais on aime y revenir.",
     ],
@@ -226,6 +258,8 @@ export const rueRecits: RueRecit[] = [
       lat: 48.9492,
       lng: 2.5137,
     },
+    date: "10 avril 2023",
+    heure: "22:55",
     parole: [
       "Cogito, ergo sum, sous un cerisier en fleurs, je trouve la beauté dans la diversité de ce monde.",
     ],
@@ -240,6 +274,8 @@ export const rueRecits: RueRecit[] = [
       lat: 48.8647,
       lng: 2.3902,
     },
+    date: "28 avril 2023",
+    heure: "18:03",
     parole: [
       "La cour du 38 est l’endroit où on joue, on crie, on fait des réunions ou des concerts, où on fait pousser des fleurs, de la menthe, où on cohabite et c’est probablement mon endroit préféré dans le quartier",
     ],
@@ -254,6 +290,8 @@ export const rueRecits: RueRecit[] = [
       lat: 48.8709,
       lng: 2.3782,
     },
+    date: "28 avril 2023",
+    heure: "19:18",
     parole: [
       "Les poings serrés, le quartier a connu des temps passés difficiles. Mais avec le temps, nous avons évolué, appris à pardonner pour avancer vers un avenir meilleur.",
     ],
@@ -268,6 +306,8 @@ export const rueRecits: RueRecit[] = [
       lat: 48.9471,
       lng: 2.5083,
     },
+    date: "1 janvier 2024",
+    heure: "20:13",
     parole: [
       "Le parc est mon point de gravité ; j'ai toujours traîné aux alentours sans m'en éloigner, mais j'y suis rattaché d'une manière ou d'une autre.",
     ],
@@ -282,11 +322,13 @@ export const rueRecits: RueRecit[] = [
       lat: 48.8938,
       lng: 2.2125,
     },
+    date: "9 février 2024",
+    heure: "15:41",
     parole: [
       "Un jour de mars 2016, une voiture m'a percutée sur cette avenue, me forçant à faire une pause dans ma vie, surtout sur le plan professionnel. Après ma convalescence, j'ai enfin pris la décision de changer de voie. Depuis, j'ai co-fondé le magazine Dialna.fr, je suis devenue journaliste. J'ai été éditrice, organisatrice d'événements culturels. Cet accident, qui aurait pu me coûter la vie a en réalité été l'une des meilleures choses qui me soient arrivées.",
     ],
     couverture: "cover.jpg",
-    couvertureFit: "cover",
+    couvertureFit: "contain",
     photos: createPhotos("Nadia Boucheni", 2),
   },
 ];

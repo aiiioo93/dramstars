@@ -152,7 +152,13 @@ export default async function RueRecitPage({
                       : ""
                   }
                 >
-                  <div className="relative overflow-hidden bg-black">
+                  <div
+                    className={`relative overflow-hidden ${
+                      photo.type === "video"
+                        ? "aspect-square bg-black"
+                        : "bg-black"
+                    }`}
+                  >
                     {photo.type === "video" ? (
                       <video
                         aria-label={photo.alt}
@@ -167,7 +173,7 @@ export default async function RueRecitPage({
                         muted
                         playsInline
                         preload="metadata"
-                        className="h-auto w-full"
+                        className="block h-full w-full object-cover object-center"
                       >
                         {photo.webmSrc && (
                           <source

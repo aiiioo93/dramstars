@@ -194,13 +194,13 @@ export default function RueCartePage() {
     <main className="min-h-screen bg-[#f4f3ef] text-black">
       <section className="border-b border-black">
         <div className="mx-auto max-w-[1600px] px-5 py-8 md:px-10 md:py-10">
-          <div className="flex items-start justify-between gap-8">
+          <div className="flex flex-col items-start gap-5 lg:flex-row lg:justify-between lg:gap-8">
             <div>
               <p className="mb-3 text-[8px] uppercase tracking-[0.2em] text-black/45">
                 RUE / Dérive / 35 MM
               </p>
 
-              <h1 className="max-w-4xl text-3xl font-bold uppercase leading-[0.9] tracking-[-0.06em] md:text-5xl">
+              <h1 className="max-w-4xl text-[22px] font-bold uppercase leading-[0.9] tracking-[-0.06em] sm:text-3xl md:text-4xl lg:text-5xl">
                 Carte psychogéographique
               </h1>
             </div>

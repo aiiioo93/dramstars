@@ -482,13 +482,13 @@ export default function SiteHeader() {
                         key={serie.slug}
                         href={`/series/${serie.slug}`}
                         onClick={closeMobileMenu}
-                        className="group/serie relative min-h-[68px] border border-black/15 p-2.5 transition-colors active:bg-black active:text-white"
+                        className="group/serie relative min-h-[68px] border border-black/15 p-2.5 transition-colors duration-200 hover:bg-[#713126] active:bg-[#713126] focus-visible:bg-[#713126]"
                       >
-                        <span className="text-[6px] uppercase tracking-[0.16em] text-black/35 group-active/serie:text-white/40">
+                        <span className="text-[6px] uppercase tracking-[0.16em] text-black/35 transition-colors group-hover/serie:text-white/50 group-active/serie:text-white/50 group-focus-visible/serie:text-white/50">
                           {serie.number}
                         </span>
 
-                        <span className="absolute bottom-2.5 left-2.5 text-base font-bold uppercase tracking-[-0.05em]">
+                        <span className="absolute bottom-2.5 left-2.5 text-base font-bold uppercase tracking-[-0.05em] text-black transition-colors group-hover/serie:text-white group-active/serie:text-white group-focus-visible/serie:text-white">
                           {serie.acronym}
                         </span>
                       </Link>
@@ -498,19 +498,21 @@ export default function SiteHeader() {
                   <Link
                     href="/series/rue/carte"
                     onClick={closeMobileMenu}
-                    className="col-span-2 flex items-center justify-between border border-black/15 px-3 py-2.5 active:bg-black active:text-white"
+                    className="group/mobile-map col-span-2 flex items-center justify-between border border-black/15 px-3 py-2.5 transition-colors duration-200 hover:bg-[#713126] active:bg-[#713126] focus-visible:bg-[#713126]"
                   >
                     <div>
-                      <span className="block text-[6px] uppercase tracking-[0.16em] text-black/35">
+                      <span className="block text-[6px] uppercase tracking-[0.16em] text-black/35 transition-colors group-hover/mobile-map:text-white/50 group-active/mobile-map:text-white/50 group-focus-visible/mobile-map:text-white/50">
                         RUE / GPS
                       </span>
 
-                      <span className="mt-0.5 block text-[10px] font-bold">
+                      <span className="mt-0.5 block text-[10px] font-bold text-black transition-colors group-hover/mobile-map:text-white group-active/mobile-map:text-white group-focus-visible/mobile-map:text-white">
                         Carte des récits
                       </span>
                     </div>
 
-                    <span>→</span>
+                    <span className="text-black transition-colors group-hover/mobile-map:text-white group-active/mobile-map:text-white group-focus-visible/mobile-map:text-white">
+                      →
+                    </span>
                   </Link>
                 </div>
               )}
@@ -563,13 +565,13 @@ export default function SiteHeader() {
                   <Link
                     href="/d-ou-je-viens"
                     onClick={closeMobileMenu}
-                    className="relative block min-h-[70px] border border-black bg-black p-2.5 text-white"
+                    className="group/mobile-chapter relative block min-h-[70px] border border-black bg-[#d8d4ca] p-2.5 text-black transition-colors duration-200 hover:bg-[#713126] active:bg-[#713126] focus-visible:bg-[#713126]"
                   >
-                    <span className="text-[6px] uppercase tracking-[0.16em] text-white/45">
+                    <span className="text-[6px] uppercase tracking-[0.16em] text-black/45 transition-colors group-hover/mobile-chapter:text-white/55 group-active/mobile-chapter:text-white/55 group-focus-visible/mobile-chapter:text-white/55">
                       Chapitre II
                     </span>
 
-                    <span className="absolute bottom-2.5 left-2.5 text-[11px] font-bold">
+                    <span className="absolute bottom-2.5 left-2.5 text-[11px] font-bold text-black transition-colors group-hover/mobile-chapter:text-white group-active/mobile-chapter:text-white group-focus-visible/mobile-chapter:text-white">
                       Le récit
                     </span>
 

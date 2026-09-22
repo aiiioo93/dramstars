@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { rueRecits } from "@/data/photos/rue";
+import { getSeriesPhotos } from "@/lib/photo-files";
 import { photoSeries } from "@/lib/series";
 
 const rueSerie = photoSeries.find(
@@ -36,6 +37,33 @@ export default function RuePage() {
   if (!rueSerie) {
     return null;
   }
+
+  const serieIndex = photoSeries.findIndex(
+    (serie) => serie.slug === rueSerie.slug,
+  );
+
+  const previousSerie =
+    photoSeries[
+      (serieIndex - 1 + photoSeries.length) %
+        photoSeries.length
+    ];
+
+  const nextSerie =
+    photoSeries[
+      (serieIndex + 1) % photoSeries.length
+    ];
+
+  const previousSeriePreview =
+    getSeriesPhotos(
+      previousSerie.acronym,
+      previousSerie.slug,
+    )[0] ?? null;
+
+  const nextSeriePreview =
+    getSeriesPhotos(
+      nextSerie.acronym,
+      nextSerie.slug,
+    )[0] ?? null;
 
   return (
     <main className="min-h-screen bg-[#f4f3ef] text-black">
@@ -121,7 +149,7 @@ export default function RuePage() {
                       }
                       fill
                       sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      className="object-cover transition-opacity duration-700 ease-out group-hover:opacity-90"
+                      className={`${recit.couvertureFit === "contain" ? "object-contain" : "object-cover"} transition-opacity duration-700 ease-out group-hover:opacity-90`}
                     />
 
                     <span className="pointer-events-none absolute left-2 top-2 h-[6px] w-[6px] rounded-full bg-[#ff3b18]" />
@@ -172,6 +200,94 @@ export default function RuePage() {
           </p>
         </div>
       </section>
+
+      {/* ================================================= */}
+      {/* NAVIGATION ENTRE LES SÉRIES */}
+      {/* ================================================= */}
+
+      <nav className="border-t border-black bg-[#f4f3ef]">
+        <div className="mx-auto grid max-w-[1600px] grid-cols-2">
+          <Link
+            href={`/series/${previousSerie.slug}`}
+            className="group relative min-h-[140px] overflow-hidden border-r border-black p-4 text-black md:min-h-[250px] md:p-10"
+          >
+            {previousSeriePreview && (
+              <Image
+                src={previousSeriePreview.src}
+                alt={`Aperçu ${previousSerie.title}`}
+                fill
+                sizes="50vw"
+                className="pointer-events-none object-cover opacity-0 grayscale transition-all duration-700 ease-out group-hover:scale-[1.025] group-hover:opacity-40 group-active:scale-[1.025] group-active:opacity-40"
+              />
+            )}
+
+            <div className="pointer-events-none absolute inset-0 z-10 bg-[#713126]/0 transition-colors duration-500 ease-out group-hover:bg-[#713126]/85 group-active:bg-[#713126]/85" />
+            <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-black/0 to-transparent transition-all duration-500 group-hover:from-black/25 group-active:from-black/25" />
+
+            <div className="relative z-20 flex min-h-[108px] flex-col justify-between md:min-h-[170px]">
+              <div>
+                <span className="inline-block text-[7px] uppercase tracking-[0.14em] text-black/45 transition-all duration-500 group-hover:-translate-x-1 group-hover:text-white/65 group-active:-translate-x-1 group-active:text-white/65 md:text-[8px]">
+                  ← Précédente
+                </span>
+
+                <p className="mt-3 text-lg font-bold uppercase tracking-[-0.04em] text-black transition-colors duration-500 group-hover:text-white group-active:text-white md:mt-4 md:text-2xl">
+                  {previousSerie.acronym}
+                </p>
+
+                <p className="mt-1 line-clamp-2 text-[8px] leading-4 text-black/45 transition-colors duration-500 group-hover:text-white/60 group-active:text-white/60 md:text-[9px] md:uppercase md:tracking-[0.14em]">
+                  {previousSerie.title}
+                </p>
+              </div>
+
+              <p className="hidden max-w-md translate-y-4 text-sm leading-6 text-white/85 opacity-0 transition-all duration-700 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-active:translate-y-0 group-active:opacity-100 md:block">
+                {previousSerie.description}
+              </p>
+            </div>
+
+            <span className="pointer-events-none absolute bottom-4 left-4 z-20 h-[5px] w-[5px] rounded-full bg-[#ff3b18] opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-active:opacity-100 md:bottom-10 md:left-10 md:h-[6px] md:w-[6px]" />
+          </Link>
+
+          <Link
+            href={`/series/${nextSerie.slug}`}
+            className="group relative min-h-[140px] overflow-hidden p-4 text-right text-black md:min-h-[250px] md:p-10"
+          >
+            {nextSeriePreview && (
+              <Image
+                src={nextSeriePreview.src}
+                alt={`Aperçu ${nextSerie.title}`}
+                fill
+                sizes="50vw"
+                className="pointer-events-none object-cover opacity-0 grayscale transition-all duration-700 ease-out group-hover:scale-[1.025] group-hover:opacity-40 group-active:scale-[1.025] group-active:opacity-40"
+              />
+            )}
+
+            <div className="pointer-events-none absolute inset-0 z-10 bg-[#713126]/0 transition-colors duration-500 ease-out group-hover:bg-[#713126]/85 group-active:bg-[#713126]/85" />
+            <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-l from-black/0 to-transparent transition-all duration-500 group-hover:from-black/25 group-active:from-black/25" />
+
+            <div className="relative z-20 flex min-h-[108px] flex-col items-end justify-between md:min-h-[170px]">
+              <div>
+                <span className="inline-block text-[7px] uppercase tracking-[0.14em] text-black/45 transition-all duration-500 group-hover:translate-x-1 group-hover:text-white/65 group-active:translate-x-1 group-active:text-white/65 md:text-[8px]">
+                  Suivante →
+                </span>
+
+                <p className="mt-3 text-lg font-bold uppercase tracking-[-0.04em] text-black transition-colors duration-500 group-hover:text-white group-active:text-white md:mt-4 md:text-2xl">
+                  {nextSerie.acronym}
+                </p>
+
+                <p className="mt-1 line-clamp-2 text-[8px] leading-4 text-black/45 transition-colors duration-500 group-hover:text-white/60 group-active:text-white/60 md:text-[9px] md:uppercase md:tracking-[0.14em]">
+                  {nextSerie.title}
+                </p>
+              </div>
+
+              <p className="hidden max-w-md translate-y-4 text-sm leading-6 text-white/85 opacity-0 transition-all duration-700 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-active:translate-y-0 group-active:opacity-100 md:block">
+                {nextSerie.description}
+              </p>
+            </div>
+
+            <span className="pointer-events-none absolute bottom-4 right-4 z-20 h-[5px] w-[5px] rounded-full bg-[#ff3b18] opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-active:opacity-100 md:bottom-10 md:right-10 md:h-[6px] md:w-[6px]" />
+          </Link>
+        </div>
+      </nav>
     </main>
   );
 }
