@@ -1,9 +1,16 @@
 import Link from "next/link";
 
-import RueGoogleMap, {
+import RueMap, {
   type RueMapPoint,
-} from "@/components/RueGoogleMap";
+  type RueMapReferencePoint,
+} from "@/components/RueMap";
 import { rueRecits } from "@/data/photos/rue";
+
+const referencePoint: RueMapReferencePoint = {
+  address: "3 avenue Laennec, 93270 Sevran",
+  lat: 48.944868,
+  lng: 2.515655,
+};
 
 function formatGps(lat: number, lng: number) {
   return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
@@ -74,7 +81,7 @@ export default function RueCartePage() {
           <div className="mb-2 flex items-end justify-between border-b border-black/20 pb-2">
             <div>
               <p className="text-[7px] uppercase tracking-[0.2em] text-black/40">
-                Territoire réel / Google Maps
+                Territoire réel / MapLibre
               </p>
               <p className="mt-1 text-xs font-bold uppercase tracking-[0.08em]">
                 Carte interactive
@@ -85,15 +92,9 @@ export default function RueCartePage() {
             </span>
           </div>
 
-          <RueGoogleMap
-            apiKey={
-              process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ??
-              ""
-            }
-            mapId={
-              process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID
-            }
+          <RueMap
             points={points}
+            referencePoint={referencePoint}
           />
 
           <div className="mt-10 border-t border-black pt-4">
