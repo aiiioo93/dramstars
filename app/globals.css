@@ -36,6 +36,15 @@ a {
   text-decoration: none;
 }
 
+.rue-maplibre {
+  position: relative;
+  overflow: visible;
+}
+
+.rue-maplibre .maplibregl-popup {
+  z-index: 50;
+}
+
 .rue-maplibre .maplibregl-ctrl-group {
   overflow: hidden;
   border: 1px solid #0a0a0a;
@@ -61,11 +70,12 @@ a {
 }
 
 .rue-maplibre .maplibregl-popup-content {
+  overflow: hidden;
   border: 1px solid #0a0a0a;
   border-radius: 0;
   background: #f4f3ef;
-  box-shadow: 4px 4px 0 rgb(113 49 38 / 28%);
-  padding: 12px;
+  box-shadow: 7px 7px 0 rgb(113 49 38 / 24%);
+  padding: 0;
 }
 
 .rue-maplibre .maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
@@ -93,45 +103,146 @@ a {
   font-weight: 700;
   line-height: 1;
   cursor: pointer;
-  transition: transform 180ms ease, box-shadow 180ms ease;
+  transition: box-shadow 180ms ease, outline-color 180ms ease;
 }
 
 .rue-map-marker:hover,
 .rue-map-marker:focus-visible {
   z-index: 2;
-  outline: none;
-  transform: scale(1.14);
+  outline: 2px solid #0a0a0a;
+  outline-offset: 3px;
+}
+
+.rue-map-marker.is-selected {
+  z-index: 4;
+  outline: 2px solid #713126;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 2px #f4f3ef, 0 0 0 5px #713126;
 }
 
 .rue-map-marker--story {
   width: 29px;
   height: 29px;
-  border: 2px solid #713126;
-  background: #ff3b18;
+  border: 2px solid #f4f3ef;
+  background: #0a0a0a;
   color: #f4f3ef;
+  box-shadow: 0 0 0 1px #0a0a0a, 0 2px 0 rgb(10 10 10 / 24%);
+  font-size: 9px;
+}
+
+.rue-map-marker--photograph {
+  width: 29px;
+  height: 29px;
+  border: 2px solid #0a0a0a;
+  background: #f4f3ef;
+  color: #0a0a0a;
   box-shadow: 0 2px 0 rgb(10 10 10 / 24%);
   font-size: 9px;
 }
 
-.rue-map-marker--reference {
+.rue-map-marker--origin {
+  z-index: 3;
   width: 44px;
   height: 44px;
-  border: 3px solid #f4f3ef;
-  background: #2563eb;
-  color: #fff;
-  box-shadow: 0 0 0 1px #173b87, 0 4px 0 rgb(10 10 10 / 24%);
+  border: 7px double #0a0a0a;
+  background: #f4f3ef;
+  color: #0a0a0a;
+  box-shadow: 0 4px 0 rgb(10 10 10 / 24%);
   font-size: 10px;
 }
 
 .rue-map-popup {
-  min-width: 190px;
+  position: relative;
+  min-width: 220px;
   color: #0a0a0a;
   font-family: var(--font-typewriter), "Courier New", monospace;
+  animation: rue-map-popup-reveal 180ms ease-out both;
+}
+
+.rue-map-popup::before,
+.rue-map-popup::after {
+  position: absolute;
+  z-index: 3;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+  content: "";
+}
+
+.rue-map-popup::before {
+  top: 6px;
+  left: 6px;
+  border-left: 1px solid #f4f3ef;
+  border-top: 1px solid #f4f3ef;
+}
+
+.rue-map-popup::after {
+  right: 6px;
+  bottom: 6px;
+  border-right: 1px solid #713126;
+  border-bottom: 1px solid #713126;
+}
+
+.rue-map-popup__body {
+  position: relative;
+  z-index: 1;
+  padding: 12px;
+  background: rgb(244 243 239 / 82%);
+}
+
+.rue-map-popup__preview {
+  position: relative;
+  height: 104px;
+  border-bottom: 1px solid #0a0a0a;
+  background-position: 50% 35%;
+  background-size: cover;
+  filter: grayscale(0.15);
+  opacity: 0.9;
+}
+
+.rue-map-popup__preview::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgb(10 10 10 / 8%) 25%,
+    rgb(10 10 10 / 58%) 100%
+  );
+  pointer-events: none;
+  content: "";
+}
+
+.rue-map-popup__preview-label {
+  position: absolute;
+  z-index: 1;
+  right: 8px;
+  bottom: 7px;
+  border: 1px solid rgb(244 243 239 / 65%);
+  background: rgb(10 10 10 / 72%);
+  color: #f4f3ef;
+  padding: 4px 6px 3px;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.rue-map-popup--origin {
+  min-width: 230px;
+}
+
+.rue-map-popup--origin .rue-map-popup__preview {
+  height: 124px;
+}
+
+.rue-map-popup__people {
+  max-height: 88px;
+  margin-top: 8px;
+  overflow-y: auto;
 }
 
 .rue-map-popup__eyebrow {
   margin: 0;
-  color: #2563eb;
+  color: rgb(10 10 10 / 56%);
   font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -146,8 +257,15 @@ a {
   text-transform: uppercase;
 }
 
-.rue-map-popup__eyebrow + .rue-map-popup__title {
-  margin-top: 8px;
+.rue-map-popup__title + .rue-map-popup__title {
+  margin-top: 3px;
+}
+
+.rue-map-popup__more {
+  margin: 4px 0 0;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
 }
 
 .rue-map-popup__coordinates {
@@ -157,8 +275,53 @@ a {
   letter-spacing: 0.08em;
 }
 
+.rue-map-popup__coordinates--origin {
+  margin-top: 8px;
+  color: #0a0a0a;
+  font-weight: 700;
+}
+
+.rue-map-popup__distance {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 10px;
+  border-bottom: 1px solid #713126;
+  border-top: 1px solid #713126;
+  background: rgb(113 49 38 / 7%);
+  padding: 8px 0 7px;
+  color: #713126;
+}
+
+.rue-map-popup__distance[hidden] {
+  display: none;
+}
+
+.rue-map-popup__distance span {
+  max-width: 92px;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.rue-map-popup__distance strong {
+  white-space: nowrap;
+  font-size: 15px;
+  letter-spacing: -0.04em;
+}
+
+.rue-map-popup.is-selected .rue-map-popup__body {
+  box-shadow: inset 4px 0 0 #713126;
+}
+
 .rue-map-popup__link {
   display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
   margin-top: 12px;
   border: 1px solid #0a0a0a;
   background: #f4f3ef;
@@ -170,9 +333,42 @@ a {
   transition: color 160ms ease, background-color 160ms ease;
 }
 
+@keyframes rue-map-popup-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rue-map-popup {
+    animation: none;
+  }
+}
+
 .rue-map-popup__link:hover,
 .rue-map-popup__link:focus-visible {
-  background: #713126;
+  background: #0a0a0a;
   color: #fff;
   outline: none;
+}
+
+@media (min-width: 768px) {
+  .rue-map-popup--with-preview .rue-map-popup__preview {
+    height: 112px;
+    opacity: 0.86;
+  }
+
+  .rue-map-popup--with-preview .rue-map-popup__body {
+    background: #f4f3ef;
+  }
+
+  .rue-map-popup--origin .rue-map-popup__preview {
+    height: 132px;
+  }
 }

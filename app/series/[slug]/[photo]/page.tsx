@@ -74,19 +74,9 @@ export async function generateMetadata({
     return {};
   }
 
-  const editorialData = getPhotoEditorialData(
-    slug,
-    photo,
-  );
-
   return {
-    title:
-      editorialData?.title ??
-      `Photographie ${photo} — ${serie.acronym}`,
-
-    description:
-      editorialData?.legend ??
-      serie.description,
+    title: `Photographie ${photo} — ${serie.acronym}`,
+    description: `Archive photographique ${serie.acronym}.`,
   };
 }
 
@@ -179,6 +169,8 @@ export default async function PhotoPage({
     serie.slug,
     photo.slug,
   );
+  const hideEditorialText =
+    serie.slug === "zup" || serie.slug === "lsb";
 
   const photoNumber = String(
     currentIndex + 1,
@@ -227,8 +219,9 @@ export default async function PhotoPage({
             </p>
 
             <h1 className="mx-auto max-w-4xl text-3xl font-bold leading-[0.95] tracking-[-0.05em] md:text-5xl">
-              {editorialData?.title ??
-                `Photographie ${photoNumber}`}
+              {hideEditorialText
+                ? `Photographie ${photoNumber}`
+                : editorialData?.title ?? `Photographie ${photoNumber}`}
             </h1>
           </header>
 
@@ -242,7 +235,6 @@ export default async function PhotoPage({
                 src={photo.src}
                 alt={
                   editorialData?.alt ??
-                  editorialData?.title ??
                   `${serie.title} — photographie ${
                     currentIndex + 1
                   }`
@@ -263,13 +255,10 @@ export default async function PhotoPage({
             {/* LIEU + DATE + HEURE */}
             {/* ================================================= */}
 
-            {editorialData?.location &&
-              editorialData?.date &&
+            {editorialData?.date &&
               editorialData?.time && (
-                <figcaption className="mt-5 border-b border-black/15 pb-5 text-base italic leading-7 text-black/65 md:text-lg md:leading-8">
-                  {editorialData.location} —{" "}
-                  {editorialData.date} à{" "}
-                  {editorialData.time}
+                <figcaption className="mt-5 border-b border-black/15 pb-5 text-[9px] uppercase tracking-[0.16em] text-black/55">
+                  {editorialData.date} — {editorialData.time}
                 </figcaption>
               )}
           </figure>
@@ -278,7 +267,7 @@ export default async function PhotoPage({
           {/* DESCRIPTION */}
           {/* ================================================= */}
 
-          {editorialData ? (
+          {editorialData && !hideEditorialText ? (
             <article className="mt-9 max-w-2xl">
               <div className="space-y-6 text-sm leading-7 text-black/70 md:text-base md:leading-8">
                 {editorialData.description
@@ -299,15 +288,7 @@ export default async function PhotoPage({
                   )}
               </div>
             </article>
-          ) : (
-            <article className="mt-9 max-w-2xl">
-              <p className="text-sm leading-7 text-black/60">
-                Les informations liées à cette
-                photographie seront ajoutées
-                prochainement.
-              </p>
-            </article>
-          )}
+          ) : null}
         </div>
       </section>
 
@@ -353,16 +334,13 @@ export default async function PhotoPage({
                   </span>
 
                   <p className="mt-5 max-w-[90%] text-xs font-bold uppercase leading-5 text-black transition-colors duration-500 group-hover:text-white group-active:text-white md:text-sm">
-                    {getPhotoEditorialData(
-                      serie.slug,
-                      previousPhoto.slug,
-                    )?.title ??
-                      `Photographie ${String(
-                        currentIndex,
-                      ).padStart(
-                        2,
-                        "0",
-                      )}`}
+                    {hideEditorialText
+                      ? `Photographie ${String(currentIndex).padStart(2, "0")}`
+                      : getPhotoEditorialData(
+                          serie.slug,
+                          previousPhoto.slug,
+                        )?.title ??
+                        `Photographie ${String(currentIndex).padStart(2, "0")}`}
                   </p>
                 </div>
 
@@ -415,16 +393,13 @@ export default async function PhotoPage({
                   </span>
 
                   <p className="mt-5 max-w-[90%] text-xs font-bold uppercase leading-5 text-black transition-colors duration-500 group-hover:text-white group-active:text-white md:text-sm">
-                    {getPhotoEditorialData(
-                      serie.slug,
-                      nextPhoto.slug,
-                    )?.title ??
-                      `Photographie ${String(
-                        currentIndex + 2,
-                      ).padStart(
-                        2,
-                        "0",
-                      )}`}
+                    {hideEditorialText
+                      ? `Photographie ${String(currentIndex + 2).padStart(2, "0")}`
+                      : getPhotoEditorialData(
+                          serie.slug,
+                          nextPhoto.slug,
+                        )?.title ??
+                        `Photographie ${String(currentIndex + 2).padStart(2, "0")}`}
                   </p>
                 </div>
 

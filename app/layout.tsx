@@ -29,6 +29,10 @@ export const metadata: Metadata = {
   },
   description:
     "La dramstars — photographie urbaine, récit autobiographique et regard sur la Seine-Saint-Denis.",
+  robots: {
+    index: process.env.VERCEL_ENV === "production",
+    follow: process.env.VERCEL_ENV === "production",
+  },
 };
 
 export default function RootLayout({

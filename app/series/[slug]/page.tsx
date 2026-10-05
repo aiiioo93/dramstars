@@ -11,6 +11,10 @@ type SeriesPageProps = {
   }>;
 };
 
+function hasPendingAuthorText(slug: string) {
+  return slug === "zup" || slug === "lsb";
+}
+
 export function generateStaticParams() {
   return photoSeries.map((serie) => ({
     slug: serie.slug,
@@ -32,7 +36,9 @@ export async function generateMetadata({
 
   return {
     title: serie.title,
-    description: serie.description,
+    description: hasPendingAuthorText(serie.slug)
+      ? `Archive photographique ${serie.acronym}.`
+      : serie.description,
   };
 }
 
@@ -50,6 +56,7 @@ export default async function SeriesPage({
   }
 
   const serie = photoSeries[serieIndex];
+  const authorTextPending = hasPendingAuthorText(serie.slug);
 
   const previousSerie =
     photoSeries[
@@ -118,10 +125,9 @@ export default async function SeriesPage({
               </h1>
             </div>
 
-            <div className="hidden text-right text-[8px] uppercase leading-5 tracking-[0.17em] text-black/45 sm:block">
-              <p>{serie.location}</p>
-              <p>Photographie urbaine</p>
-            </div>
+            <p className="hidden text-right text-[8px] uppercase leading-5 tracking-[0.17em] text-black/45 sm:block">
+              Photographie urbaine
+            </p>
           </div>
         </div>
       </section>
@@ -234,19 +240,20 @@ export default async function SeriesPage({
       {/* TEXTE DE LA SÉRIE */}
       {/* ================================================= */}
 
-      <section className="border-t border-black bg-black px-5 py-16 text-[#f4f3ef] md:px-10 md:py-20">
-        <div className="mx-auto grid max-w-[1200px] gap-10 md:grid-cols-[180px_1fr]">
-          <div className="text-[8px] uppercase leading-5 tracking-[0.18em] text-white/40">
-            <p>{serie.number} / 03</p>
-            <p>{serie.acronym}</p>
-            <p>{serie.location}</p>
-          </div>
+      {!authorTextPending && (
+        <section className="border-t border-black bg-black px-5 py-16 text-[#f4f3ef] md:px-10 md:py-20">
+          <div className="mx-auto grid max-w-[1200px] gap-10 md:grid-cols-[180px_1fr]">
+            <div className="text-[8px] uppercase leading-5 tracking-[0.18em] text-white/40">
+              <p>{serie.number} / 03</p>
+              <p>{serie.acronym}</p>
+            </div>
 
-          <p className="max-w-3xl text-xl font-bold leading-[1.25] tracking-[-0.035em] md:text-3xl">
-            {serie.description}
-          </p>
-        </div>
-      </section>
+            <p className="max-w-3xl text-xl font-bold leading-[1.25] tracking-[-0.035em] md:text-3xl">
+              {serie.description}
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* ================================================= */}
       {/* NAVIGATION ENTRE LES SÉRIES */}
@@ -303,7 +310,9 @@ export default async function SeriesPage({
               {/* DESCRIPTION TABLETTE / DESKTOP */}
 
               <p className="hidden max-w-md translate-y-4 text-sm leading-6 text-white/85 opacity-0 transition-all duration-700 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-active:translate-y-0 group-active:opacity-100 md:block">
-                {previousSerie.description}
+                {hasPendingAuthorText(previousSerie.slug)
+                  ? previousSerie.title
+                  : previousSerie.description}
               </p>
             </div>
 
@@ -360,7 +369,9 @@ export default async function SeriesPage({
               {/* DESCRIPTION TABLETTE / DESKTOP */}
 
               <p className="hidden max-w-md translate-y-4 text-sm leading-6 text-white/85 opacity-0 transition-all duration-700 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-active:translate-y-0 group-active:opacity-100 md:block">
-                {nextSerie.description}
+                {hasPendingAuthorText(nextSerie.slug)
+                  ? nextSerie.title
+                  : nextSerie.description}
               </p>
             </div>
 

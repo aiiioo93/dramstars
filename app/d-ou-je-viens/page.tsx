@@ -164,14 +164,14 @@ export default function DOuJeViensPage() {
             section.id === "2001-2013";
 
           return (
-            <section
-              key={section.id}
-              className={
-                isSilence
-                  ? "relative flex min-h-[120svh] items-center border-t border-black/15 bg-[#f4f3ef] px-5 py-36 text-black md:px-10 md:py-48"
-                  : "relative border-t border-black px-5 py-20 md:px-10 md:py-28"
-              }
-            >
+            <div key={section.id}>
+              <section
+                className={
+                  isSilence
+                    ? "relative flex min-h-[120svh] items-center border-t border-black/15 bg-[#f4f3ef] px-5 py-36 text-black md:px-10 md:py-48"
+                    : "relative border-t border-black px-5 py-20 md:px-10 md:py-28"
+                }
+              >
               <div className="mx-auto w-full max-w-[1500px]">
                 {/* NUMÉRO SECTION */}
 
@@ -303,7 +303,44 @@ export default function DOuJeViensPage() {
                   </div>
                 )}
               </div>
-            </section>
+              </section>
+
+              {section.id === "1999-2001" && (
+                <section
+                  aria-label="Emplacement de la carte du chapitre II"
+                  className="border-t border-black bg-black px-5 py-20 text-[#f4f3ef] md:px-10 md:py-28"
+                >
+                  <div className="mx-auto max-w-[1500px]">
+                    <div className="mb-10 flex items-center justify-between border-b border-white/20 pb-3 text-[7px] uppercase tracking-[0.2em] text-white/40">
+                      <span>Carte des retours</span>
+                      <span>2013 — aujourd’hui</span>
+                    </div>
+
+                    <div className="grid gap-10 lg:grid-cols-[0.38fr_0.62fr]">
+                      <div>
+                        <p className="max-w-[280px] text-[9px] uppercase leading-6 tracking-[0.16em] text-white/55">
+                          La carte accueillera uniquement les photographies
+                          numériques géolocalisées, à partir de 2013.
+                        </p>
+                      </div>
+
+                      <div className="flex min-h-[360px] items-center justify-center border border-white/30 bg-[#f4f3ef] px-6 text-center text-black md:min-h-[480px]">
+                        <div className="max-w-md">
+                          <span className="mx-auto block h-3 w-3 rounded-full border-2 border-black bg-[#f4f3ef]" />
+                          <p className="mt-6 text-sm font-bold uppercase tracking-[0.08em]">
+                            Carte en préparation
+                          </p>
+                          <p className="mt-3 text-[8px] uppercase leading-5 tracking-[0.16em] text-black/45">
+                            Coordonnées KML et photographies définitives en
+                            attente. Les lieux ne seront pas nommés.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              )}
+            </div>
           );
         })}
       </section>

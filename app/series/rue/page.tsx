@@ -104,7 +104,7 @@ export default function RuePage() {
             </p>
 
             <Link
-              href="/series/rue/carte"
+              href="/ou-je-suis?series=rue"
               className="group/map flex w-fit min-h-12 justify-self-end items-center justify-between gap-5 border border-black bg-[#d8d4ca] px-3 py-2.5 text-black transition-colors duration-300 hover:bg-[#ff3b18] sm:min-h-14 sm:min-w-[250px] sm:gap-8 sm:px-4 sm:py-3"
             >
               <span className="flex items-center gap-3">
@@ -149,7 +149,7 @@ export default function RuePage() {
                       }
                       fill
                       sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      className={`${recit.couvertureFit === "contain" ? "object-contain" : "object-cover"} transition-opacity duration-700 ease-out group-hover:opacity-90`}
+                      className="object-contain transition-opacity duration-700 ease-out group-hover:opacity-90"
                     />
 
                     <span className="pointer-events-none absolute left-2 top-2 h-[6px] w-[6px] rounded-full bg-[#ff3b18]" />
