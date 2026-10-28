@@ -18,6 +18,12 @@
 /out/
 /public/maplibre/
 
+# Local upstream MapLibre source checkout; the app uses the npm dependency.
+/maplibre-gl-js-main/
+
+# Lightroom originals with private EXIF metadata (GPS, XMP, IPTC)
+/NewFiles/
+
 # production
 /build
 

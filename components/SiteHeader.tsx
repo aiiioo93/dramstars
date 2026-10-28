@@ -155,6 +155,18 @@ export default function SiteHeader() {
 
                   <div className="pl-3 pt-3">
                     <Link
+                      href="/d-ou-je-viens"
+                      onClick={closeMenus}
+                      className="group/origin mb-2 flex min-h-[80px] flex-col justify-between border border-black p-3 transition-colors duration-300 hover:bg-black hover:text-[#f4f3ef]"
+                    >
+                      <span className="text-[7px] uppercase tracking-[0.18em] text-black/40 transition-colors group-hover/origin:text-white/45">
+                        Chapitre II / Carte
+                      </span>
+                      <span className="text-sm font-bold uppercase tracking-[-0.04em] transition-colors group-hover/origin:text-[#f4f3ef]">
+                        D’où je viens →
+                      </span>
+                    </Link>
+                    <Link
                       href="/histoire"
                       onClick={closeMenus}
                       className="group/about flex min-h-[170px] flex-col justify-between border border-black p-3 transition-colors duration-300 hover:bg-black hover:text-[#f4f3ef]"
@@ -242,6 +254,14 @@ export default function SiteHeader() {
                 </span>
               ))}
             </div>
+
+            <Link
+              href="/d-ou-je-viens"
+              onClick={closeMenus}
+              className="mt-2 flex items-center justify-between border border-black/20 px-3 py-3 text-[11px] font-bold transition-colors hover:bg-black hover:text-[#f4f3ef] active:bg-black active:text-[#f4f3ef]"
+            >
+              D’où je viens <span>→</span>
+            </Link>
 
             <Link
               href="/histoire"

@@ -4,13 +4,15 @@ import RueMap, {
   type RueMapPoint,
   type RueMapReferencePoint,
 } from "@/components/RueMap";
+import {
+  personalPhotoPoints,
+  saintPaulPhotos,
+} from "@/data/photo-map";
 import { rueRecits } from "@/data/photos/rue";
 
 const originPoint: RueMapReferencePoint = {
   lat: 48.9449,
   lng: 2.5157,
-  previewSrc: "/Photos/profil.jpg",
-  focalPoint: "50% 32%",
 };
 
 export const metadata: Metadata = {
@@ -19,11 +21,45 @@ export const metadata: Metadata = {
     "Carte photographique des personnes et des récits de LADRAMSTARS.",
 };
 
-export default function OuJeSuisPage() {
-  const points: RueMapPoint[] = rueRecits.map((recit, index) => ({
-    index,
+type OuJeSuisPageProps = {
+  searchParams: Promise<{ series?: string | string[] }>;
+};
+
+export default async function OuJeSuisPage({
+  searchParams,
+}: OuJeSuisPageProps) {
+  const requestedSeries = (await searchParams).series;
+  const initialSeries =
+    requestedSeries === "zup" ||
+    requestedSeries === "lsb" ||
+    requestedSeries === "rue"
+      ? requestedSeries
+      : "all";
+  const photoPoints: RueMapPoint[] = personalPhotoPoints.map(
+    (photo, index) => ({
+      id: photo.id,
+      index,
+      markerLabel: String(photo.photoNumber).padStart(2, "0"),
+      slug: photo.id,
+      people: [],
+      date: photo.date,
+      time: photo.time,
+      lat: photo.lat,
+      lng: photo.lng,
+      kind: "photograph",
+      series: photo.series,
+      href: photo.href,
+      previewSrc: photo.src,
+    }),
+  );
+  const storyPoints: RueMapPoint[] = rueRecits.map((recit, index) => ({
+    id: `rue-${recit.slug}`,
+    index: photoPoints.length + index,
+    markerLabel: String(index + 1).padStart(2, "0"),
     slug: recit.slug,
     people: [recit.personne],
+    date: recit.date,
+    time: recit.heure,
     lat: Number(recit.gps.lat.toFixed(4)),
     lng: Number(recit.gps.lng.toFixed(4)),
     kind: "story",
@@ -31,6 +67,20 @@ export default function OuJeSuisPage() {
     href: `/series/rue/${recit.slug}`,
     previewSrc: `/Photos/series/rue/${recit.slug}/${recit.couverture}`,
   }));
+  const collectivePoint: RueMapPoint = {
+    id: "collective-eglise-saint-paul",
+    index: photoPoints.length + storyPoints.length,
+    markerLabel: "8",
+    slug: "eglise-saint-paul",
+    people: [],
+    title: "Église Saint Paul",
+    lat: 48.947,
+    lng: 2.5095,
+    kind: "collective",
+    href: "/lieux/eglise-saint-paul",
+    previewSrc: saintPaulPhotos[0]?.src,
+  };
+  const points = [...photoPoints, ...storyPoints, collectivePoint];
 
   return (
     <main className="min-h-screen bg-[#f4f3ef] text-black">
@@ -44,9 +94,9 @@ export default function OuJeSuisPage() {
           </h1>
           <div className="mt-8 grid gap-5 border-t border-black/20 pt-4 text-[8px] leading-5 tracking-[0.08em] text-black/55 md:grid-cols-[1fr_280px]">
             <p className="max-w-2xl">
-              Les personnes sont nommées. Les lieux ne le sont pas. La carte
-              montre les récits et les photographies sans exposer les adresses
-              qui les ont fait naître.
+              ZUP et LSB présentent les photographies par date et heure. Les
+              blases restent réservés aux récits RUE. Les lieux collectifs
+              ouvrent des albums chronologiques.
             </p>
             <p className="uppercase tracking-[0.16em] text-black md:text-right">
               Carte photographique
@@ -63,7 +113,7 @@ export default function OuJeSuisPage() {
                 Carte épurée / MapLibre
               </p>
               <p className="mt-1 text-xs font-bold uppercase tracking-[0.08em]">
-                Bâti et végétal
+                45 points / 3 séries
               </p>
             </div>
             <span className="text-right text-[7px] uppercase tracking-[0.18em] text-black/40">
@@ -71,7 +121,11 @@ export default function OuJeSuisPage() {
             </span>
           </div>
 
-          <RueMap points={points} referencePoint={originPoint} />
+          <RueMap
+            points={points}
+            referencePoint={originPoint}
+            initialSeries={initialSeries}
+          />
         </div>
       </section>
     </main>

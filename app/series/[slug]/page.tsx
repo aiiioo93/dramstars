@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { personalPhotoPoints } from "@/data/photo-map";
 import { getSeriesPhotos } from "@/lib/photo-files";
 import { photoSeries } from "@/lib/series";
 
@@ -75,10 +76,20 @@ export default async function SeriesPage({
    * =========================================================
    */
 
-  const galleryPhotos = getSeriesPhotos(
-    serie.acronym,
-    serie.slug,
-  );
+  const galleryPhotos = authorTextPending
+    ? personalPhotoPoints
+        .filter((photo) => photo.series === serie.slug)
+        .sort((left, right) => left.photoNumber - right.photoNumber)
+        .map((photo) => ({
+          src: photo.src,
+          slug: String(photo.photoNumber).padStart(2, "0"),
+          filename: `${photo.id}.jpg`,
+          href: photo.href,
+        }))
+    : getSeriesPhotos(serie.acronym, serie.slug).map((photo) => ({
+        ...photo,
+        href: `/series/${serie.slug}/${encodeURIComponent(photo.slug)}`,
+      }));
 
   /*
    * =========================================================
@@ -165,11 +176,7 @@ export default async function SeriesPage({
                 {galleryPhotos.map((photo, index) => (
                   <Link
                     key={photo.src}
-                    href={`/series/${
-                      serie.slug
-                    }/${encodeURIComponent(
-                      photo.slug,
-                    )}`}
+                    href={photo.href}
                     className="group relative block overflow-hidden bg-black"
                   >
                     {/* PHOTO */}

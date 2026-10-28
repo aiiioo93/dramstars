@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import ChapterTwoMap from "@/components/ChapterTwoMap";
 import { chapitreSections } from "@/data/d-ou-je-viens";
 
 export const metadata = {
@@ -308,33 +309,41 @@ export default function DOuJeViensPage() {
               {section.id === "1999-2001" && (
                 <section
                   aria-label="Emplacement de la carte du chapitre II"
-                  className="border-t border-black bg-black px-5 py-20 text-[#f4f3ef] md:px-10 md:py-28"
+                  className="border-y border-black bg-black px-5 py-20 text-[#f4f3ef] md:px-10 md:py-28"
                 >
                   <div className="mx-auto max-w-[1500px]">
-                    <div className="mb-10 flex items-center justify-between border-b border-white/20 pb-3 text-[7px] uppercase tracking-[0.2em] text-white/40">
-                      <span>Carte des retours</span>
+                    <div className="mb-10 flex items-center justify-between gap-4 border-b border-white/20 pb-3 text-[7px] uppercase tracking-[0.2em] text-white/40">
+                      <span>Cadre cartographique / Chapitre II</span>
                       <span>2013 — aujourd’hui</span>
                     </div>
 
-                    <div className="grid gap-10 lg:grid-cols-[0.38fr_0.62fr]">
-                      <div>
-                        <p className="max-w-[280px] text-[9px] uppercase leading-6 tracking-[0.16em] text-white/55">
-                          La carte accueillera uniquement les photographies
-                          numériques géolocalisées, à partir de 2013.
+                    <div className="grid items-start gap-12 lg:grid-cols-[0.32fr_0.68fr] lg:gap-16">
+                      <div className="lg:sticky lg:top-24">
+                        <p className="text-[7px] uppercase tracking-[0.2em] text-[#ff3b18]">
+                          Atlas en construction
                         </p>
+                        <h2 className="mt-4 max-w-[360px] text-3xl font-bold uppercase leading-[0.92] tracking-[-0.05em] md:text-5xl">
+                          Un territoire à documenter.
+                        </h2>
+                        <p className="mt-7 max-w-[380px] text-[9px] uppercase leading-6 tracking-[0.13em] text-white/60">
+                          Le fond situe uniquement le cadre géographique demandé
+                          pour ce chapitre. Il ne représente encore ni trajet,
+                          ni origine, ni photographie validée.
+                        </p>
+
+                        <div className="mt-8 border-l border-white/25 pl-4 text-[7px] uppercase leading-5 tracking-[0.14em] text-white/40">
+                          Les futurs points proviendront uniquement des
+                          photographies numériques géolocalisées et validées.
+                        </div>
                       </div>
 
-                      <div className="flex min-h-[360px] items-center justify-center border border-white/30 bg-[#f4f3ef] px-6 text-center text-black md:min-h-[480px]">
-                        <div className="max-w-md">
-                          <span className="mx-auto block h-3 w-3 rounded-full border-2 border-black bg-[#f4f3ef]" />
-                          <p className="mt-6 text-sm font-bold uppercase tracking-[0.08em]">
-                            Carte en préparation
-                          </p>
-                          <p className="mt-3 text-[8px] uppercase leading-5 tracking-[0.16em] text-black/45">
-                            Coordonnées KML et photographies définitives en
-                            attente. Les lieux ne seront pas nommés.
-                          </p>
-                        </div>
+                      <div>
+                        <ChapterTwoMap />
+                        <p className="mt-5 max-w-3xl text-[7px] uppercase leading-5 tracking-[0.14em] text-white/40">
+                          Mise en ligne après validation des coordonnées, de
+                          l’origine du chapitre et des données de matière. Aucun
+                          point fictif n’est utilisé pour remplir la carte.
+                        </p>
                       </div>
                     </div>
                   </div>
