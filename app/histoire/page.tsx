@@ -18,8 +18,8 @@ export default function HistoirePage() {
       <section className="border-b border-white/20 px-5 py-16 md:px-10 md:py-24">
         <div className="mx-auto max-w-[1600px]">
           <div className="mb-8 flex justify-between text-[9px] uppercase tracking-[0.18em] text-white/45">
-            <span>LADRAMSTARS</span>
-            <span>Madou / 1984</span>
+            <span>Mon histoire</span>
+            <span>Archive personnelle</span>
           </div>
 
           <h1 className="text-[clamp(4rem,11vw,10rem)] font-bold uppercase leading-[0.8] tracking-[-0.08em]">
@@ -56,7 +56,6 @@ export default function HistoirePage() {
 
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent px-4 pb-4 pt-24">
                   <div className="flex justify-between border-t border-white/30 pt-3 text-[8px] uppercase tracking-[0.14em] text-white/70">
-                    <span>Madou / LADRAMSTARS</span>
                     <span>© Camille Haddad</span>
                   </div>
                 </div>

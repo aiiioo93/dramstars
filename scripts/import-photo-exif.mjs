@@ -11,6 +11,7 @@ import {
   parseExifDateTime,
   roundCoordinate,
   sortSourceFiles,
+  applyPhotoRegistry,
 } from "../lib/photo-import.mjs";
 
 const projectRoot = path.resolve(
@@ -20,6 +21,7 @@ const projectRoot = path.resolve(
 const sourceRoot = path.join(projectRoot, "NewFiles");
 const publicRoot = path.join(projectRoot, "public", "Photos", "map");
 const dataRoot = path.join(projectRoot, "data", "generated");
+const registryPath = path.join(projectRoot, "data", "photo-number-registry.json");
 const reportPath = path.join(
   projectRoot,
   "RAPPORT_IMPORT_EXIF_2026-10-28.md",
@@ -276,7 +278,9 @@ async function main() {
     results.push({ series: config.key, ...result });
   }
 
-  const points = results.flatMap((result) => result.points);
+  const importedPoints = results.flatMap((result) => result.points);
+  const registry = JSON.parse(await fs.readFile(registryPath, "utf8"));
+  const points = applyPhotoRegistry(importedPoints, registry.assignments);
   const anomalies = results.flatMap((result) => result.anomalies);
 
   if (points.length !== 28) {

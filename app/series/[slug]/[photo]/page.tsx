@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { lsbPhotos } from "@/data/photos/lsb";
 import { zupPhotos } from "@/data/photos/zup";
@@ -93,6 +93,10 @@ export default async function PhotoPage({
     slug,
     photo: photoSlug,
   } = await params;
+
+  if ((slug === "zup" || slug === "lsb") && /^\d{2}$/.test(photoSlug)) {
+    redirect(`/photographies/${slug}/${photoSlug}`);
+  }
 
   /*
    * =========================================================

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { personalPhotoPoints } from "@/data/photo-map";
 import { getSeriesPhotos } from "@/lib/photo-files";
 import { photoSeries } from "@/lib/series";
+import { formatSangTitle } from "@/lib/photo-display";
 
 type SeriesPageProps = {
   params: Promise<{
@@ -79,16 +80,18 @@ export default async function SeriesPage({
   const galleryPhotos = authorTextPending
     ? personalPhotoPoints
         .filter((photo) => photo.series === serie.slug)
-        .sort((left, right) => left.photoNumber - right.photoNumber)
+        .sort((left, right) => left.sangTitleNumber - right.sangTitleNumber)
         .map((photo) => ({
           src: photo.src,
           slug: String(photo.photoNumber).padStart(2, "0"),
           filename: `${photo.id}.jpg`,
           href: photo.href,
+          title: formatSangTitle(photo.sangTitleNumber),
         }))
     : getSeriesPhotos(serie.acronym, serie.slug).map((photo) => ({
         ...photo,
         href: `/series/${serie.slug}/${encodeURIComponent(photo.slug)}`,
+        title: photo.slug,
       }));
 
   /*
@@ -134,6 +137,8 @@ export default async function SeriesPage({
               <h1 className="max-w-4xl text-3xl font-bold uppercase leading-[0.9] tracking-[-0.06em] md:text-5xl">
                 {serie.title}
               </h1>
+              <p className="mt-4 text-[8px] uppercase tracking-[0.16em] text-black/55">{serie.period}</p>
+              {serie.credits ? <p className="mt-2 text-[8px] leading-5 tracking-[0.08em] text-black/55">Textes : {serie.credits}</p> : null}
             </div>
 
             <p className="hidden text-right text-[8px] uppercase leading-5 tracking-[0.17em] text-black/45 sm:block">
@@ -212,11 +217,7 @@ export default async function SeriesPage({
 
                     <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-2 pb-2 pt-8 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                       <span className="text-[7px] uppercase tracking-[0.16em] text-white/70">
-                        {serie.acronym} /{" "}
-                        {String(index + 1).padStart(
-                          3,
-                          "0",
-                        )}
+                        {photo.title}
                       </span>
                     </div>
                   </Link>

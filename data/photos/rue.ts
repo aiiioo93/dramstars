@@ -134,7 +134,6 @@ export const rueRecits: RueRecit[] = [
         alt: "Piksoo Koko Caramelo — série RUE — vidéo",
         autoPlay: true,
       },
-      ...createPhotos("Piksoo Koko Caramelo", 14),
     ],
   },
   {

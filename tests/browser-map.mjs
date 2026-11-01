@@ -32,7 +32,6 @@ try {
   await desktopPage.goto(`${baseUrl}/ou-je-suis`, {
     waitUntil: "domcontentloaded",
   });
-  await desktopPage.waitForSelector('[data-map-ready="true"]');
   await desktopPage.waitForSelector(".rue-map-marker--photograph");
   await waitForCount(
     desktopPage.locator(".rue-map-marker--photograph"),
@@ -45,9 +44,36 @@ try {
     "17 marqueurs RUE attendus",
   );
   await waitForCount(
-    desktopPage.locator(".rue-map-marker--collective"),
+    desktopPage.locator(".rue-map-marker--umc"),
     1,
-    "un lieu collectif attendu",
+    "une UMC attendue",
+  );
+  assert.deepEqual(
+    await desktopPage.evaluate(() => ({
+      frame: getComputedStyle(document.querySelector(".rue-maplibre")).overflow,
+      map: getComputedStyle(document.querySelector("[data-map-ready]")).overflow,
+    })),
+    { frame: "hidden", map: "hidden" },
+    "les marqueurs doivent être découpés aux limites de la PsychoKarta",
+  );
+  assert.equal(
+    await desktopPage.evaluate(() => {
+      const header = document.querySelector("[data-map-header]").getBoundingClientRect();
+      const map = document.querySelector("[data-map-ready]").getBoundingClientRect();
+      return map.top >= header.bottom - 1;
+    }),
+    true,
+    "la zone des marqueurs doit commencer sous la bande du point d’origine",
+  );
+  assert.equal(
+    await desktopPage.locator(".maplibregl-ctrl-logo").count(),
+    0,
+    "le logo MapLibre ne doit pas être affiché",
+  );
+  assert.equal(
+    await desktopPage.locator(".maplibregl-ctrl-attrib.maplibregl-compact-show").count(),
+    0,
+    "les attributions légales doivent être repliées par défaut",
   );
 
   const firstPhotoMarker = desktopPage
@@ -61,12 +87,10 @@ try {
     { hoverNone: false, coarse: false },
     "le parcours ordinateur doit exposer un pointeur fin",
   );
-  await firstPhotoMarker.dispatchEvent("mouseenter");
-  await desktopPage.waitForSelector(".rue-map-popup--preview");
   assert.equal(
-    await desktopPage.locator(".rue-map-popup--preview a").count(),
+    await desktopPage.locator(".rue-map-popup--preview").count(),
     0,
-    "l’aperçu de survol doit rester léger",
+    "aucune fiche ne doit s’ouvrir au survol",
   );
   await firstPhotoMarker.dispatchEvent("click");
   await desktopPage.waitForSelector(".rue-map-popup--full");
@@ -79,7 +103,7 @@ try {
     fullPage: false,
   });
 
-  await desktopPage.getByRole("button", { name: /ZUP — 16/i }).click();
+  await desktopPage.getByRole("button", { name: /^ZUP$/i }).click();
   await waitForCount(
     desktopPage.locator(".rue-map-marker--photograph"),
     16,
@@ -91,7 +115,7 @@ try {
     "le filtre ZUP doit masquer RUE",
   );
 
-  await desktopPage.getByRole("button", { name: /RUE — 17/i }).click();
+  await desktopPage.getByRole("button", { name: /^RUE$/i }).click();
   const search = desktopPage.getByRole("searchbox", {
     name: /Rechercher un blase/i,
   });
@@ -102,6 +126,14 @@ try {
     1,
     "la recherche RUE doit filtrer les blases",
   );
+  await desktopPage.getByRole("button", { name: /^UMC$/i }).click();
+  await desktopPage.getByRole("button", { name: "Église Saint-Paul", exact: true }).click();
+  await waitForCount(
+    desktopPage.locator(".rue-map-marker--photograph"),
+    8,
+    "l’UMC doit révéler ses huit photographies",
+  );
+  assert.match(await desktopPage.locator("main").innerText(), /VUE GÉNÉRALE/i);
 
   await desktopPage.goto(`${baseUrl}/lieux/eglise-saint-paul`, {
     waitUntil: "domcontentloaded",
@@ -116,16 +148,16 @@ try {
     waitUntil: "domcontentloaded",
   });
   assert.match(await desktopPage.locator("main").innerText(), /03\/06\/2011/);
-  assert.match(await desktopPage.locator("main").innerText(), /09:14/);
+  assert.match(await desktopPage.locator("main").innerText(), /09h14/i);
+  assert.match(await desktopPage.locator("main").innerText(), /SANG TITRE 1/i);
 
   await desktopPage.goto(`${baseUrl}/series/rue/carte`, {
     waitUntil: "domcontentloaded",
   });
   await desktopPage.waitForURL(/\/ou-je-suis\?series=rue$/);
-  await desktopPage.waitForSelector('[data-map-ready="true"]');
   assert.equal(
     await desktopPage
-      .getByRole("button", { name: /RUE — 17/i })
+      .getByRole("button", { name: /^RUE$/i })
       .getAttribute("aria-pressed"),
     "true",
     "l’ancienne carte RUE doit ouvrir la carte commune filtrée sur RUE",
@@ -146,9 +178,6 @@ try {
     "Emplacement de la carte du chapitre II",
   );
   await desktopChapterMap.scrollIntoViewIfNeeded();
-  await desktopPage.waitForSelector(
-    '[aria-label*="Carte du chapitre"][data-map-ready="true"]',
-  );
   await desktopChapterMap.screenshot({
     path: ".next/chapter-two-desktop.png",
   });
@@ -164,7 +193,6 @@ try {
   await mobilePage.goto(`${baseUrl}/ou-je-suis`, {
     waitUntil: "domcontentloaded",
   });
-  await mobilePage.waitForSelector('[data-map-ready="true"]');
   await mobilePage.waitForSelector(".rue-map-marker--photograph");
   await mobilePage
     .locator(".rue-map-marker--photograph")
@@ -196,9 +224,6 @@ try {
     "Emplacement de la carte du chapitre II",
   );
   await mobileChapterMap.scrollIntoViewIfNeeded();
-  await mobilePage.waitForSelector(
-    '[aria-label*="Carte du chapitre"][data-map-ready="true"]',
-  );
   await mobileChapterMap.screenshot({
     path: ".next/chapter-two-mobile.png",
   });

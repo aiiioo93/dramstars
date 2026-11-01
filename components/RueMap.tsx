@@ -15,16 +15,18 @@ import type { Feature, FeatureCollection, LineString } from "geojson";
 import "maplibre-gl/dist/maplibre-gl.css";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { formatPhotoDateTime, formatSangTitle } from "@/lib/photo-display";
 
-export type ArchivePointKind = "photograph" | "story" | "collective";
+export type ArchivePointKind = "photograph" | "story" | "umc";
 export type ArchiveSeries = "zup" | "lsb" | "rue";
 
 export type RueMapPoint = {
   id: string;
   index: number;
   markerLabel: string;
+  sangTitleNumber?: number;
   slug: string;
   people: string[];
   title?: string;
@@ -37,6 +39,7 @@ export type RueMapPoint = {
   href: string;
   previewSrc?: string;
   focalPoint?: string;
+  memberPointIds?: string[];
 };
 
 export type RueMapReferencePoint = {
@@ -59,9 +62,6 @@ const SELECTED_CONNECTION_LAYER_ID = "dramstars-selected-connection-line";
 const POPUP_EDGE_PADDING = 18;
 const MOBILE_SWIPE_THRESHOLD = 52;
 
-// Décision éditoriale toujours en attente de Madou. Ce réglage est isolé ici.
-const SHOW_DISTANCE_FROM_ORIGIN = true;
-
 const SERIES_LABELS: Record<ArchiveSeries, string> = {
   zup: "ZUP",
   lsb: "LSB",
@@ -74,37 +74,14 @@ function formatGps(lat: number, lng: number) {
   return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
 }
 
+function collapseLegalAttribution(container: HTMLElement) {
+  const attribution = container.querySelector(".maplibregl-ctrl-attrib");
+  attribution?.classList.remove("maplibregl-compact-show");
+  attribution?.removeAttribute("open");
+}
+
 function getPointSeriesLabel(point: RueMapPoint) {
-  return point.series ? SERIES_LABELS[point.series] : "Lieu collectif";
-}
-
-function getDistanceKm(
-  start: RueMapReferencePoint,
-  end: Pick<RueMapPoint, "lat" | "lng">,
-) {
-  const toRadians = (value: number) => (value * Math.PI) / 180;
-  const latitudeDelta = toRadians(end.lat - start.lat);
-  const longitudeDelta = toRadians(end.lng - start.lng);
-  const startLatitude = toRadians(start.lat);
-  const endLatitude = toRadians(end.lat);
-  const haversine =
-    Math.sin(latitudeDelta / 2) ** 2 +
-    Math.cos(startLatitude) *
-      Math.cos(endLatitude) *
-      Math.sin(longitudeDelta / 2) ** 2;
-
-  return 6371.0088 * 2 * Math.asin(Math.sqrt(haversine));
-}
-
-function formatDistance(distanceKm: number) {
-  if (distanceKm < 1) {
-    return `${Math.round(distanceKm * 1000)} m`;
-  }
-
-  return `${distanceKm.toLocaleString("fr-FR", {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 1,
-  })} km`;
+  return point.series ? SERIES_LABELS[point.series] : "UMC";
 }
 
 function createConnectionFeature(
@@ -131,7 +108,7 @@ function createConnectionCollection(
   return {
     type: "FeatureCollection",
     features: points
-      .filter((point) => point.kind !== "collective")
+      .filter((point) => point.kind !== "umc")
       .map((point) => createConnectionFeature(point, referencePoint)),
   };
 }
@@ -143,7 +120,7 @@ function createSelectedConnectionCollection(
   return {
     type: "FeatureCollection",
     features:
-      point && point.kind !== "collective"
+      point && point.kind !== "umc"
         ? [createConnectionFeature(point, referencePoint)]
         : [],
   };
@@ -171,10 +148,11 @@ function appendPeopleList(content: HTMLElement, people: string[]) {
 }
 
 function appendDateTime(content: HTMLElement, point: RueMapPoint) {
-  if (!point.date || !point.time) return;
+  const value = formatPhotoDateTime(point.date, point.time);
+  if (!value) return;
   const date = document.createElement("p");
   date.className = "rue-map-popup__datetime";
-  date.textContent = `${point.date} — ${point.time}`;
+  date.textContent = value;
   content.append(date);
 }
 
@@ -195,7 +173,7 @@ function createPreviewPopup(point: RueMapPoint) {
   body.className = "rue-map-popup__body";
   if (point.kind === "story") {
     appendPeopleList(body, point.people);
-  } else if (point.kind === "collective" && point.title) {
+  } else if (point.kind === "umc" && point.title) {
     const title = document.createElement("p");
     title.className = "rue-map-popup__title";
     title.textContent = point.title;
@@ -213,7 +191,6 @@ function createPreviewPopup(point: RueMapPoint) {
 
 function createFullPopup(
   point: RueMapPoint,
-  referencePoint: RueMapReferencePoint,
 ) {
   const content = document.createElement("div");
   content.className = `rue-map-popup rue-map-popup--full rue-map-popup--${point.kind}`;
@@ -233,14 +210,14 @@ function createFullPopup(
   eyebrow.textContent =
     point.kind === "story"
       ? `Récit / ${getPointSeriesLabel(point)}`
-      : point.kind === "collective"
-        ? "Lieu collectif / Album"
+      : point.kind === "umc"
+        ? "UMC / Unité de mémoire collective"
         : `Photographie / ${getPointSeriesLabel(point)}`;
   body.append(eyebrow);
 
   if (point.kind === "story") {
     appendPeopleList(body, point.people);
-  } else if (point.kind === "collective" && point.title) {
+  } else if (point.kind === "umc" && point.title) {
     const title = document.createElement("p");
     title.className = "rue-map-popup__title";
     title.textContent = point.title;
@@ -255,26 +232,13 @@ function createFullPopup(
     body.append(coordinates);
   }
 
-  if (SHOW_DISTANCE_FROM_ORIGIN) {
-    const distance = document.createElement("div");
-    distance.className = "rue-map-popup__distance";
-    const distanceLabel = document.createElement("span");
-    distanceLabel.textContent = "Distance depuis l’origine";
-    const distanceValue = document.createElement("strong");
-    distanceValue.textContent = formatDistance(
-      getDistanceKm(referencePoint, point),
-    );
-    distance.append(distanceLabel, distanceValue);
-    body.append(distance);
-  }
-
   const link = document.createElement("a");
   link.className = "rue-map-popup__link";
   link.href = point.href;
   link.textContent =
     point.kind === "story"
       ? "Voir le récit →"
-      : point.kind === "collective"
+      : point.kind === "umc"
         ? "Ouvrir l’album →"
         : "Voir la photo →";
   body.append(link);
@@ -303,18 +267,18 @@ function getMarkerAccessibleLabel(point: RueMapPoint) {
   if (point.kind === "story") {
     return `${point.people.join(", ")} — ${formatGps(point.lat, point.lng)}`;
   }
-  if (point.kind === "collective") {
-    return `${point.title ?? "Lieu collectif"} — album photographique`;
+  if (point.kind === "umc") {
+    return `${point.title ?? "UMC"} — Unité de mémoire collective`;
   }
-  return `Photographie ${getPointSeriesLabel(point)} ${point.markerLabel} — ${point.date ?? "date inconnue"} à ${point.time ?? "heure inconnue"}`;
+  return `${point.sangTitleNumber ? formatSangTitle(point.sangTitleNumber) : `Photographie ${getPointSeriesLabel(point)}`} — ${formatPhotoDateTime(point.date, point.time) || "date inconnue"}`;
 }
 
 function createMarkerElement(point: RueMapPoint) {
   const marker = document.createElement("button");
   const title = getMarkerAccessibleLabel(point);
   marker.type = "button";
-  marker.className = `rue-map-marker rue-map-marker--${point.kind}`;
-  marker.textContent = point.markerLabel;
+  marker.className = `rue-map-marker rue-map-marker--${point.kind} rue-map-marker--series-${point.series ?? "umc"}`;
+  marker.textContent = "";
   marker.title = title;
   marker.setAttribute("aria-label", title);
   marker.setAttribute("aria-expanded", "false");
@@ -450,12 +414,6 @@ function addPointInteractions({
   onPinnedChange: (pinned: boolean) => void;
 }): PointInteraction {
   let pinned = false;
-  const openPreview = () => {
-    if (!pinned && !touchInterface) previewPopup.addTo(map);
-  };
-  const closePreview = () => {
-    if (!pinned) previewPopup.remove();
-  };
   const setPinned = (nextPinned: boolean) => {
     pinned = nextPinned;
     previewPopup.remove();
@@ -482,19 +440,11 @@ function addPointInteractions({
     }
   };
 
-  markerElement.addEventListener("mouseenter", openPreview);
-  markerElement.addEventListener("mouseleave", closePreview);
-  markerElement.addEventListener("focus", openPreview);
-  markerElement.addEventListener("blur", closePreview);
   markerElement.addEventListener("click", toggle);
   markerElement.addEventListener("keydown", handleKeyDown);
   return {
     setPinned,
     cleanup() {
-      markerElement.removeEventListener("mouseenter", openPreview);
-      markerElement.removeEventListener("mouseleave", closePreview);
-      markerElement.removeEventListener("focus", openPreview);
-      markerElement.removeEventListener("blur", closePreview);
       markerElement.removeEventListener("click", toggle);
       markerElement.removeEventListener("keydown", handleKeyDown);
     },
@@ -503,13 +453,11 @@ function addPointInteractions({
 
 function MobilePointPanel({
   point,
-  referencePoint,
   onClose,
   onPrevious,
   onNext,
 }: {
   point: RueMapPoint;
-  referencePoint: RueMapReferencePoint;
   onClose: () => void;
   onPrevious: () => void;
   onNext: () => void;
@@ -559,8 +507,8 @@ function MobilePointPanel({
               <p className="text-[7px] font-bold uppercase tracking-[0.16em] text-black/45">
                 {point.kind === "story"
                   ? `Récit / ${getPointSeriesLabel(point)}`
-                  : point.kind === "collective"
-                    ? "Lieu collectif / Album"
+                  : point.kind === "umc"
+                    ? "UMC / Unité de mémoire collective"
                     : `Photographie / ${getPointSeriesLabel(point)}`}
               </p>
               <button
@@ -579,19 +527,14 @@ function MobilePointPanel({
                   <p key={person}>{person}</p>
                 ))}
               </div>
-            ) : point.kind === "collective" ? (
+            ) : point.kind === "umc" ? (
               <p className="mt-2 text-[11px] font-bold uppercase tracking-[0.06em]">
                 {point.title}
               </p>
             ) : null}
-            {point.date && point.time ? (
+            {formatPhotoDateTime(point.date, point.time) ? (
               <p className="mt-2 text-[9px] uppercase tracking-[0.12em] text-black/60">
-                {point.date} — {point.time}
-              </p>
-            ) : null}
-            {SHOW_DISTANCE_FROM_ORIGIN ? (
-              <p className="mt-2 text-[8px] uppercase tracking-[0.11em] text-[#713126]">
-                Depuis l’origine : {formatDistance(getDistanceKm(referencePoint, point))}
+                {formatPhotoDateTime(point.date, point.time)}
               </p>
             ) : null}
           </div>
@@ -611,7 +554,7 @@ function MobilePointPanel({
           >
             {point.kind === "story"
               ? "Voir le récit"
-              : point.kind === "collective"
+              : point.kind === "umc"
                 ? "Ouvrir l’album"
                 : "Voir la photo"}
           </Link>
@@ -629,8 +572,17 @@ function MobilePointPanel({
   );
 }
 
-function RueMapCanvas({ points, referencePoint }: RueMapProps) {
+function RueMapCanvas({
+  points,
+  referencePoint,
+  focusedUmc,
+  onUmcSelect,
+}: RueMapProps & {
+  focusedUmc?: RueMapPoint | null;
+  onUmcSelect?: (point: RueMapPoint) => void;
+}) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<MapLibreMap | null>(null);
   const interactionByPointIdRef = useRef(new Map<string, PointInteraction>());
   const [loadError, setLoadError] = useState(false);
   const [mapReady, setMapReady] = useState(false);
@@ -668,8 +620,10 @@ function RueMapCanvas({ points, referencePoint }: RueMapProps) {
       scrollZoom: false,
       dragRotate: false,
       pitchWithRotate: false,
-      maplibreLogo: true,
+      maplibreLogo: false,
     });
+    mapRef.current = map;
+    collapseLegalAttribution(mapContainer);
     const touchInterface = window.matchMedia(
       "(hover: none), (pointer: coarse)",
     ).matches;
@@ -779,7 +733,7 @@ function RueMapCanvas({ points, referencePoint }: RueMapProps) {
         maxWidth: "290px",
       })
         .setLngLat(pointLngLat)
-        .setDOMContent(createFullPopup(point, referencePoint));
+        .setDOMContent(createFullPopup(point));
       const marker = new Marker({ element, anchor: "center" })
         .setLngLat(pointLngLat)
         .addTo(map);
@@ -798,6 +752,7 @@ function RueMapCanvas({ points, referencePoint }: RueMapProps) {
             }
             activeInteraction = interaction;
             selectedPoint = point;
+            if (point.kind === "umc") onUmcSelect?.(point);
             if (touchInterface) setMobileSelectedId(point.id);
           } else if (activeInteraction === interaction) {
             activeInteraction = null;
@@ -829,6 +784,7 @@ function RueMapCanvas({ points, referencePoint }: RueMapProps) {
         center: [referencePoint.lng, referencePoint.lat],
         zoom: DEFAULT_MAP_ZOOM,
       });
+      collapseLegalAttribution(mapContainer);
       const boundaryLayerIds = applyDramstarsStyle(map);
       map.addSource(CONNECTIONS_SOURCE_ID, {
         type: "geojson",
@@ -867,7 +823,7 @@ function RueMapCanvas({ points, referencePoint }: RueMapProps) {
         const animateBoundaries = (time: number) => {
           if (mapIsVisible && !document.hidden && time - lastPaintAt >= 120) {
             lastPaintAt = time;
-            const shift = Math.sin((time - startedAt) / 5200) * 0.55;
+            const shift = Math.sin((time - startedAt) / 900) * 2.2;
             for (const layerId of boundaryLayerIds) {
               if (map.getLayer(layerId)) {
                 map.setPaintProperty(layerId, "line-translate", [
@@ -901,8 +857,19 @@ function RueMapCanvas({ points, referencePoint }: RueMapProps) {
       interactionByPointId.clear();
       markers.forEach((marker) => marker.remove());
       map.remove();
+      mapRef.current = null;
     };
-  }, [points, referencePoint]);
+  }, [points, referencePoint, onUmcSelect]);
+
+  useEffect(() => {
+    if (!focusedUmc) return;
+    mapRef.current?.flyTo({
+      center: [focusedUmc.lng, focusedUmc.lat],
+      zoom: 16,
+      duration: 700,
+      essential: true,
+    });
+  }, [focusedUmc]);
 
   const selectRelativeMobilePoint = (direction: -1 | 1) => {
     if (!points.length) return;
@@ -933,12 +900,12 @@ function RueMapCanvas({ points, referencePoint }: RueMapProps) {
   }
 
   const mapPointCount = points.filter(
-    (point) => point.kind !== "collective",
+    (point) => point.kind !== "umc",
   ).length;
   return (
     <>
       <div className="rue-maplibre border border-black bg-[#f4f3ef] p-1">
-        <div className="grid gap-2 border-b border-black bg-[#f4f3ef] px-3 py-2 text-[8px] uppercase tracking-[0.1em] sm:grid-cols-2 sm:items-center">
+        <div data-map-header className="relative z-40 grid gap-2 border-b border-black bg-[#f4f3ef] px-3 py-2 text-[8px] uppercase tracking-[0.1em] sm:grid-cols-2 sm:items-center">
           <span className="flex items-center gap-2 font-bold text-black">
             <span className="h-2.5 w-2.5 shrink-0 rounded-full border-2 border-black bg-[#f4f3ef]" />
             Point d’origine — {formatGps(referencePoint.lat, referencePoint.lng)}
@@ -950,8 +917,8 @@ function RueMapCanvas({ points, referencePoint }: RueMapProps) {
         <div
           ref={mapContainerRef}
           data-map-ready={mapReady ? "true" : "false"}
-          aria-label={`Carte photographique interactive présentant ${mapPointCount} points et un lieu collectif`}
-          className={`relative h-[62svh] min-h-[520px] w-full overflow-visible bg-[#f4f3ef] transition-opacity duration-700 lg:h-[72svh] lg:min-h-[650px] ${
+          aria-label={`PsychoKarta interactive présentant ${mapPointCount} points et une UMC`}
+          className={`relative z-0 h-[62svh] min-h-[520px] w-full overflow-hidden bg-[#f4f3ef] transition-opacity duration-700 [contain:paint] [isolation:isolate] lg:h-[72svh] lg:min-h-[650px] ${
             mapReady ? "opacity-100" : "opacity-0"
           }`}
         />
@@ -960,7 +927,6 @@ function RueMapCanvas({ points, referencePoint }: RueMapProps) {
         ? createPortal(
             <MobilePointPanel
               point={mobileSelectedPoint}
-              referencePoint={referencePoint}
               onClose={closeMobileSelection}
               onPrevious={() => selectRelativeMobilePoint(-1)}
               onNext={() => selectRelativeMobilePoint(1)}
@@ -981,21 +947,18 @@ export default function RueMap({
     initialSeries,
   );
   const [query, setQuery] = useState("");
-  const seriesCounts = useMemo(() => {
-    const counts: Record<ArchiveSeries, number> = { zup: 0, lsb: 0, rue: 0 };
-    for (const point of points) {
-      if (point.series) counts[point.series] += 1;
-    }
-    return counts;
-  }, [points]);
-  const ruePoints = useMemo(
-    () => points.filter((point) => point.kind === "story"),
-    [points],
-  );
+  const [umcMenuOpen, setUmcMenuOpen] = useState(false);
+  const [selectedUmcId, setSelectedUmcId] = useState<string | null>(null);
+  const umcPoints = useMemo(() => points.filter((point) => point.kind === "umc"), [points]);
+  const selectedUmc = umcPoints.find((point) => point.id === selectedUmcId) ?? null;
   const visiblePoints = useMemo(() => {
+    if (selectedUmc) {
+      const members = new Set(selectedUmc.memberPointIds ?? []);
+      return points.filter((point) => point.kind === "umc" || members.has(point.id));
+    }
     const normalizedQuery = query.trim().toLocaleLowerCase("fr");
     return points.filter((point) => {
-      if (point.kind === "collective") return true;
+      if (point.kind === "umc") return true;
       if (activeSeries !== "all" && point.series !== activeSeries) return false;
       if (
         activeSeries === "rue" &&
@@ -1008,29 +971,31 @@ export default function RueMap({
       }
       return true;
     });
-  }, [activeSeries, points, query]);
+  }, [activeSeries, points, query, selectedUmc]);
 
-  const setSeries = (series: "all" | ArchiveSeries) => {
-    setActiveSeries(series);
+  const setSeries = (series: ArchiveSeries) => {
+    setSelectedUmcId(null);
+    setUmcMenuOpen(false);
+    setActiveSeries((current) => (current === series ? "all" : series));
     if (series !== "rue") setQuery("");
+  };
+
+  const selectUmc = useCallback((point: RueMapPoint) => {
+    setActiveSeries("all");
+    setQuery("");
+    setSelectedUmcId(point.id);
+    setUmcMenuOpen(false);
+  }, []);
+
+  const resetView = () => {
+    setSelectedUmcId(null);
+    setActiveSeries("all");
   };
 
   return (
     <div>
       <div className="mb-5 grid gap-3 border-y border-black py-4 lg:grid-cols-[1fr_auto] lg:items-center">
         <div className="flex flex-wrap gap-2" aria-label="Filtres par série">
-          <button
-            type="button"
-            onClick={() => setSeries("all")}
-            aria-pressed={activeSeries === "all"}
-            className={`border border-black px-3 py-2 text-[8px] font-bold uppercase tracking-[0.14em] transition-colors ${
-              activeSeries === "all"
-                ? "bg-black text-[#f4f3ef]"
-                : "bg-[#f4f3ef] text-black hover:bg-black hover:text-[#f4f3ef]"
-            }`}
-          >
-            Tous — 45
-          </button>
           {(Object.keys(SERIES_LABELS) as ArchiveSeries[]).map((series) => (
             <button
               key={series}
@@ -1043,9 +1008,17 @@ export default function RueMap({
                   : "bg-[#f4f3ef] text-black hover:bg-black hover:text-[#f4f3ef]"
               }`}
             >
-              {SERIES_LABELS[series]} — {seriesCounts[series]}
+              {SERIES_LABELS[series]}
             </button>
           ))}
+          <div className="relative">
+            <button type="button" aria-expanded={umcMenuOpen} aria-controls="umc-list" onClick={() => setUmcMenuOpen((open) => !open)} className={`border border-black px-3 py-2 text-[8px] font-bold uppercase tracking-[0.14em] transition-colors ${selectedUmc ? "bg-[#963a2c] text-white" : "bg-[#f4f3ef] text-black hover:bg-[#963a2c] hover:text-white"}`}>UMC</button>
+            {umcMenuOpen ? (
+              <div id="umc-list" className="absolute left-0 top-full z-40 mt-1 max-h-56 min-w-[260px] overflow-y-auto border border-black bg-[#f4f3ef] p-2 shadow-[6px_6px_0_rgba(0,0,0,.18)]">
+                {umcPoints.map((point) => <button key={point.id} type="button" onClick={() => selectUmc(point)} className="block w-full border-b border-black/20 px-3 py-3 text-left text-[9px] font-bold uppercase tracking-[0.08em] last:border-b-0 hover:bg-[#963a2c] hover:text-white focus-visible:bg-[#963a2c] focus-visible:text-white">{point.title}</button>)}
+              </div>
+            ) : null}
+          </div>
         </div>
         <label className="flex min-h-10 items-center border border-black bg-[#f4f3ef] px-3 lg:min-w-[320px]">
           <span className="mr-3 text-[8px] uppercase tracking-[0.14em] text-black/40">
@@ -1069,57 +1042,21 @@ export default function RueMap({
 
       <div className="mb-3 flex flex-wrap gap-x-5 gap-y-2 text-[7px] uppercase tracking-[0.14em] text-black/55">
         <span className="flex items-center gap-2">
-          <span className="h-3 w-3 rounded-full border border-black bg-[#713126]" />
-          Photographies ZUP / LSB
+          <span className="h-3 w-3 rounded-full border border-black bg-black" /> ZUP
         </span>
         <span className="flex items-center gap-2">
-          <span className="h-3 w-3 rounded-full border border-black bg-black" />
-          Récits RUE
+          <span className="h-3 w-3 rounded-full border border-black bg-[#65345f]" /> LSB
         </span>
         <span className="flex items-center gap-2">
-          <span className="h-3 w-3 rounded-full border border-black bg-[#ff3b18]" />
-          Lieux collectifs
+          <span className="h-3 w-3 border border-black bg-[#ad681f]" /> RUE
         </span>
+        <span className="flex items-center gap-2"><span className="h-3 w-3 rotate-45 border border-black bg-[#963a2c]" /> UMC</span>
       </div>
 
-      <RueMapCanvas points={visiblePoints} referencePoint={referencePoint} />
-
-      <div className="mt-10 border-t border-black pt-4">
-        <p className="text-[7px] uppercase tracking-[0.2em] text-black/40">
-          Index RUE uniquement
-        </p>
-        <h2 className="mt-1 text-lg font-bold uppercase tracking-[-0.04em]">
-          Blases
-        </h2>
-        <div className="mt-5 grid border-l border-t border-black/20 sm:grid-cols-2 lg:grid-cols-3">
-          {ruePoints.map((point) => (
-            <Link
-              key={point.id}
-              href={point.href}
-              className="group/index flex min-h-20 items-center gap-3 border-b border-r border-black/20 px-3 py-3 transition-colors hover:bg-black hover:text-[#f4f3ef]"
-            >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black bg-black text-[8px] font-bold text-[#f4f3ef] transition-colors group-hover/index:border-[#f4f3ef]">
-                {point.markerLabel}
-              </span>
-              <span className="min-w-0">
-                {point.people.map((person) => (
-                  <span
-                    key={person}
-                    className="block truncate text-[10px] font-bold uppercase tracking-[0.06em] group-hover/index:text-[#f4f3ef]"
-                  >
-                    {person}
-                  </span>
-                ))}
-                <span className="mt-1 block text-[7px] uppercase tracking-[0.16em] text-black/40 group-hover/index:text-white/55">
-                  RUE / Récit
-                </span>
-              </span>
-              <span className="ml-auto transition-transform duration-300 group-hover/index:translate-x-1">
-                →
-              </span>
-            </Link>
-          ))}
-        </div>
+      <div className="relative">
+        {selectedUmc ? <div className="pointer-events-none absolute inset-x-3 top-16 z-20 break-words text-[clamp(2.2rem,10vw,8rem)] font-bold uppercase leading-[0.78] tracking-[-0.07em] text-[#963a2c]/90">{selectedUmc.title}</div> : null}
+        {selectedUmc ? <button type="button" onClick={resetView} className="absolute bottom-5 left-5 z-30 border border-black bg-[#f4f3ef] px-4 py-3 text-[8px] font-bold uppercase tracking-[0.14em] hover:bg-black hover:text-white">← Vue générale</button> : null}
+        <RueMapCanvas points={visiblePoints} referencePoint={referencePoint} focusedUmc={selectedUmc} onUmcSelect={selectUmc} />
       </div>
     </div>
   );

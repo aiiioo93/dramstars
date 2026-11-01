@@ -295,12 +295,6 @@ export default function Home() {
 
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent px-3 pb-3 pt-16 md:px-4 md:pb-4 md:pt-24">
                 <div className="flex items-end justify-between gap-3 border-t border-white/30 pt-2.5 text-[7px] uppercase tracking-[0.14em] text-white/70 md:gap-4 md:pt-3 md:text-[8px] md:tracking-[0.15em]">
-                  <span>
-                    Madou
-                    <br />
-                    LADRAMSTARS
-                  </span>
-
                   <span className="text-right">
                     © Camille Haddad
                   </span>
@@ -308,15 +302,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* REPÈRE SOUS PHOTO — MOBILE UNIQUEMENT */}
-
-            <div className="mt-2 flex items-center justify-between md:hidden">
-              <span className="text-[6px] uppercase tracking-[0.2em] text-white/30">
-                Portrait / 84
-              </span>
-
-              <span className="h-[5px] w-[5px] rounded-full bg-[#ff3b18]" />
-            </div>
           </div>
         </div>
 
@@ -366,7 +351,7 @@ export default function Home() {
             href="/histoire"
             className="mt-8 w-fit border-b border-white/50 pb-1 text-[8px] uppercase tracking-[0.17em] text-white/60 transition-colors hover:border-white hover:text-white md:mt-10 md:text-[9px] md:tracking-[0.16em]"
           >
-            Lire mon histoire →
+            Mon histoire →
           </Link>
         </div>
       </div>
@@ -376,9 +361,10 @@ export default function Home() {
       {/* LES 3 SÉRIES */}
       {/* ================================================= */}
 
+      {false && (
       <section
         id="travaux"
-        className="border-t border-black px-5 py-20 md:px-10 md:py-28"
+        className="hidden"
       >
         <div className="mx-auto max-w-[1600px]">
           <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
@@ -517,6 +503,18 @@ export default function Home() {
               },
             )}
           </div>
+        </div>
+      </section>
+      )}
+
+      <section className="border-t border-black px-5 py-16 md:px-10 md:py-24">
+        <div className="mx-auto max-w-[1400px]">
+          <div className="relative aspect-[16/9] overflow-hidden border border-black bg-[#e5e3dc]">
+            <Image src="/Photos/psychokarta-preview-clean-2026-11.png" alt="Aperçu statique de la PsychoKarta, sans interface cartographique" fill sizes="(max-width: 1400px) 100vw, 1400px" className="object-cover" />
+          </div>
+          <Link href="/ou-je-suis" className="mt-5 inline-flex border border-black bg-[#713126] px-5 py-3 text-[9px] font-bold uppercase tracking-[0.16em] text-white transition-colors hover:bg-black focus-visible:bg-black">
+            Ouvrir la PsychoKarta →
+          </Link>
         </div>
       </section>
 

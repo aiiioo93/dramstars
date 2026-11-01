@@ -12,6 +12,12 @@ const MAP_STYLE_URL = "https://tiles.openfreemap.org/styles/liberty";
 
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
+function collapseLegalAttribution(container: HTMLElement) {
+  const attribution = container.querySelector(".maplibregl-ctrl-attrib");
+  attribution?.classList.remove("maplibregl-compact-show");
+  attribution?.removeAttribute("open");
+}
+
 type MapLayer = StyleSpecification["layers"][number];
 
 function getLayerKey(layer: MapLayer) {
@@ -77,14 +83,16 @@ export default function ChapterTwoMap() {
       zoom: 3.15,
       attributionControl: { compact: true },
       interactive: false,
-      maplibreLogo: true,
+      maplibreLogo: false,
     });
+    collapseLegalAttribution(container);
     const observer = new ResizeObserver(() => map.resize());
     observer.observe(container);
     let loaded = false;
     map.on("load", () => {
       loaded = true;
       applyChapterStyle(map);
+      collapseLegalAttribution(container);
       setStatus("ready");
     });
     map.on("error", () => {
@@ -98,39 +106,14 @@ export default function ChapterTwoMap() {
   }, []);
 
   return (
-    <div className="overflow-hidden border border-white/30 bg-[#f4f3ef] text-black shadow-[12px_12px_0_rgba(113,49,38,0.35)]">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-black px-4 py-3 text-[7px] uppercase tracking-[0.18em] md:px-5">
-        <span className="font-bold">Cadre géographique / Afrique de l’Ouest</span>
-        <span className="border border-black/25 px-2 py-1 text-black/50">
-          0 point publié
-        </span>
-      </div>
-
-      <div className="relative isolate overflow-hidden">
+    <div className="overflow-hidden border border-black bg-white text-black">
+      <div className="relative isolate overflow-hidden bg-white">
         <div
           ref={containerRef}
           aria-label="Carte du chapitre D’où je viens, sans point photographique publié"
           data-map-ready={status === "ready" ? "true" : "false"}
-          className={`h-[42svh] min-h-[340px] max-h-[560px] w-full bg-[#e1d8c8] transition-opacity duration-700 ${status === "ready" ? "opacity-100" : "opacity-35"}`}
+          className={`h-[42svh] min-h-[340px] max-h-[560px] w-full bg-white transition-opacity duration-700 ${status === "ready" ? "opacity-100" : "opacity-35"}`}
         />
-
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-10 bg-[linear-gradient(rgba(10,10,10,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(10,10,10,0.045)_1px,transparent_1px)] bg-[size:42px_42px]"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-10 shadow-[inset_0_0_90px_rgba(244,243,239,0.72)]"
-        />
-
-        <div className="pointer-events-none absolute bottom-5 left-5 z-20 max-w-[270px] border border-black bg-[#f4f3ef]/90 p-4 backdrop-blur-[2px] md:bottom-7 md:left-7">
-          <p className="text-[7px] uppercase tracking-[0.18em] text-[#713126]">
-            Cartographie en préparation
-          </p>
-          <p className="mt-2 text-[9px] font-bold uppercase leading-5 tracking-[0.1em]">
-            Aucun trajet ni lieu n’est encore publié.
-          </p>
-        </div>
 
         {status !== "ready" ? (
           <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center px-6 text-center">
@@ -143,20 +126,6 @@ export default function ChapterTwoMap() {
         ) : null}
       </div>
 
-      <div className="grid border-t border-black text-[7px] uppercase leading-5 tracking-[0.14em] sm:grid-cols-3">
-        <div className="border-b border-black/20 px-4 py-3 sm:border-b-0 sm:border-r">
-          <span className="block text-black/40">Périmètre</span>
-          Afrique de l’Ouest
-        </div>
-        <div className="border-b border-black/20 px-4 py-3 sm:border-b-0 sm:border-r">
-          <span className="block text-black/40">Origine du chapitre</span>
-          À valider
-        </div>
-        <div className="px-4 py-3">
-          <span className="block text-black/40">Données photographiques</span>
-          En attente
-        </div>
-      </div>
     </div>
   );
 }

@@ -16,9 +16,9 @@ const originPoint: RueMapReferencePoint = {
 };
 
 export const metadata: Metadata = {
-  title: "Où je suis — Carte photographique",
+  title: "Où je suis — PsychoKarta",
   description:
-    "Carte photographique des personnes et des récits de LADRAMSTARS.",
+    "PsychoKarta des photographies et des récits de Madou.",
 };
 
 type OuJeSuisPageProps = {
@@ -40,6 +40,8 @@ export default async function OuJeSuisPage({
       id: photo.id,
       index,
       markerLabel: String(photo.photoNumber).padStart(2, "0"),
+      sangTitleNumber: photo.sangTitleNumber,
+      title: `Sang titre ${photo.sangTitleNumber}`,
       slug: photo.id,
       people: [],
       date: photo.date,
@@ -68,15 +70,16 @@ export default async function OuJeSuisPage({
     previewSrc: `/Photos/series/rue/${recit.slug}/${recit.couverture}`,
   }));
   const collectivePoint: RueMapPoint = {
-    id: "collective-eglise-saint-paul",
+    id: "umc-eglise-saint-paul",
     index: photoPoints.length + storyPoints.length,
-    markerLabel: "8",
+    markerLabel: "",
     slug: "eglise-saint-paul",
     people: [],
-    title: "Église Saint Paul",
+    title: "Église Saint-Paul",
     lat: 48.947,
     lng: 2.5095,
-    kind: "collective",
+    kind: "umc",
+    memberPointIds: saintPaulPhotos.map((photo) => photo.id),
     href: "/lieux/eglise-saint-paul",
     previewSrc: saintPaulPhotos[0]?.src,
   };
@@ -87,39 +90,18 @@ export default async function OuJeSuisPage({
       <section className="border-b border-black">
         <div className="mx-auto max-w-[1600px] px-5 py-8 md:px-10 md:py-10">
           <p className="mb-3 text-[8px] uppercase tracking-[0.2em] text-black/45">
-            Chapitre I / Territoires / 35 MM
+            Chapitre I
           </p>
           <h1 className="max-w-5xl text-3xl font-bold uppercase leading-[0.9] tracking-[-0.06em] md:text-5xl lg:text-6xl">
             Où je suis
           </h1>
-          <div className="mt-8 grid gap-5 border-t border-black/20 pt-4 text-[8px] leading-5 tracking-[0.08em] text-black/55 md:grid-cols-[1fr_280px]">
-            <p className="max-w-2xl">
-              ZUP et LSB présentent les photographies par date et heure. Les
-              blases restent réservés aux récits RUE. Les lieux collectifs
-              ouvrent des albums chronologiques.
-            </p>
-            <p className="uppercase tracking-[0.16em] text-black md:text-right">
-              Carte photographique
-            </p>
-          </div>
+          <div className="mt-8 border-t border-black/20" />
         </div>
       </section>
 
       <section className="px-4 py-8 md:px-10 md:py-12">
         <div className="mx-auto max-w-[1500px]">
-          <div className="mb-2 flex items-end justify-between border-b border-black/20 pb-2">
-            <div>
-              <p className="text-[7px] uppercase tracking-[0.2em] text-black/40">
-                Carte épurée / MapLibre
-              </p>
-              <p className="mt-1 text-xs font-bold uppercase tracking-[0.08em]">
-                45 points / 3 séries
-              </p>
-            </div>
-            <span className="text-right text-[7px] uppercase tracking-[0.18em] text-black/40">
-              Zoom libre / Aucun lieu nommé
-            </span>
-          </div>
+          <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.12em]">PsychoKarta</h2>
 
           <RueMap
             points={points}

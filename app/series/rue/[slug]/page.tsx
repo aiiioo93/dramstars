@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { rueRecits } from "@/data/photos/rue";
+import { formatPhotoDateTime } from "@/lib/photo-display";
 
 type RueRecitPageProps = {
   params: Promise<{
@@ -102,22 +103,9 @@ export default async function RueRecitPage({
                 )}
               </p>
 
-              {(recit.date || recit.heure) && (
+              {formatPhotoDateTime(recit.date, recit.heure) && (
                 <div className="mt-2 text-[8px] uppercase tracking-[0.16em] text-black/40">
-                  {recit.date && (
-                    <span>{recit.date}</span>
-                  )}
-
-                  {recit.date &&
-                    recit.heure && (
-                      <span className="mx-2">
-                        /
-                      </span>
-                    )}
-
-                  {recit.heure && (
-                    <span>{recit.heure}</span>
-                  )}
+                  {formatPhotoDateTime(recit.date, recit.heure)}
                 </div>
               )}
             </div>
@@ -229,13 +217,7 @@ export default async function RueRecitPage({
               )}
             </p>
 
-            {recit.date && (
-              <p>{recit.date}</p>
-            )}
-
-            {recit.heure && (
-              <p>{recit.heure}</p>
-            )}
+            {formatPhotoDateTime(recit.date, recit.heure) && <p>{formatPhotoDateTime(recit.date, recit.heure)}</p>}
           </div>
 
           {/* PAROLE */}

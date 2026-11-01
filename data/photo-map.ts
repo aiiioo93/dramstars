@@ -1,4 +1,5 @@
 import generatedData from "./generated/photo-map-points.json";
+import registryData from "./photo-number-registry.json";
 
 export type PersonalPhotoSeries = "zup" | "lsb";
 
@@ -6,6 +7,7 @@ export type PersonalPhotoPoint = {
   id: string;
   series: PersonalPhotoSeries;
   photoNumber: number;
+  sangTitleNumber: number;
   lat: number;
   lng: number;
   date: string;
@@ -18,8 +20,15 @@ export type PersonalPhotoPoint = {
   height: number;
 };
 
-export const personalPhotoPoints =
-  generatedData.points as PersonalPhotoPoint[];
+const assignments = registryData.assignments as Record<string, number>;
+
+export const personalPhotoPoints = generatedData.points.map((point) => {
+  const sangTitleNumber = assignments[point.id];
+  if (!sangTitleNumber) {
+    throw new Error(`Numéro Sang titre manquant pour ${point.id}`);
+  }
+  return { ...point, sangTitleNumber };
+}) as PersonalPhotoPoint[];
 
 export const saintPaulPhotoIds = [
   "zup-12",

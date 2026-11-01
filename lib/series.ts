@@ -6,6 +6,8 @@ export type PhotoSeries = {
   description: string;
   location: string;
   image: string;
+  period: string;
+  credits?: string;
 };
 
 export const photoSeries: PhotoSeries[] = [
@@ -18,6 +20,8 @@ export const photoSeries: PhotoSeries[] = [
       "Je fixe les stigmates de la banlieue. Les blocs qui s’abîment, les corps dans le décor, l’enfermement dans les têtes.",
     location: "Seine-Saint-Denis",
     image: "/Photos/series/zup.jpg",
+    period: "2011 → 2017",
+    credits: "Adèle Tilouine · Nora Noor · La Rumeur",
   },
   {
     slug: "lsb",
@@ -28,6 +32,8 @@ export const photoSeries: PhotoSeries[] = [
       "Je m’enfonce dans la nuit. Le silence, les ombres, les questions qu’on ne se pose qu’à voix basse.",
     location: "Seine-Saint-Denis",
     image: "/Photos/series/lsb.jpg",
+    period: "fin 2017 → été 2022",
+    credits: "Martine Ravache, historienne de l’art",
   },
   {
     slug: "rue",
@@ -38,5 +44,6 @@ export const photoSeries: PhotoSeries[] = [
       "Les personnes photographiées choisissent le lieu et racontent leur rapport à leur environnement.",
     location: "Seine-Saint-Denis",
     image: "/Photos/series/rue.jpg",
+    period: "rentrée 2022 → en cours",
   },
 ];

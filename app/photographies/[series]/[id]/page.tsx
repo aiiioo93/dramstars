@@ -7,6 +7,7 @@ import {
   getPersonalPhotoPoint,
   personalPhotoPoints,
 } from "@/data/photo-map";
+import { formatPhotoDateTime, formatSangTitle } from "@/lib/photo-display";
 
 type PhotoPageProps = {
   params: Promise<{ series: string; id: string }>;
@@ -30,8 +31,8 @@ export async function generateMetadata({
   }
 
   return {
-    title: `Photographie ${point.series.toUpperCase()} ${id}`,
-    description: `Photographie ${point.series.toUpperCase()} prise le ${point.date} à ${point.time}.`,
+    title: formatSangTitle(point.sangTitleNumber),
+    description: `${formatSangTitle(point.sangTitleNumber)}, ${formatPhotoDateTime(point.date, point.time)}.`,
   };
 }
 
@@ -57,7 +58,7 @@ export default async function PersonalPhotoPage({
               ← Retour à la carte
             </Link>
             <span>
-              {point.series.toUpperCase()} / {id}
+              {point.series.toUpperCase()}
             </span>
           </div>
 
@@ -66,7 +67,7 @@ export default async function PersonalPhotoPage({
               Archive photographique
             </p>
             <h1 className="mt-2 text-2xl font-bold uppercase tracking-[-0.045em] md:text-4xl">
-              Photographie {point.series.toUpperCase()} / {id}
+              {formatSangTitle(point.sangTitleNumber)}
             </h1>
           </header>
 
@@ -84,8 +85,7 @@ export default async function PersonalPhotoPage({
               <span className="absolute left-3 top-3 h-2 w-2 rounded-full bg-[#ff3b18]" />
             </div>
             <figcaption className="mt-4 flex flex-wrap justify-between gap-2 border-b border-black/20 pb-4 text-[9px] uppercase tracking-[0.16em] text-black/60">
-              <span>{point.date}</span>
-              <span>{point.time}</span>
+              <span>{formatPhotoDateTime(point.date, point.time)}</span>
             </figcaption>
           </figure>
         </div>

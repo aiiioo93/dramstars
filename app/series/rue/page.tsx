@@ -82,6 +82,7 @@ export default function RuePage() {
               <h1 className="max-w-4xl text-3xl font-bold uppercase leading-[0.9] tracking-[-0.06em] md:text-5xl">
                 {rueSerie.title}
               </h1>
+              <p className="mt-4 text-[8px] uppercase tracking-[0.16em] text-black/55">{rueSerie.period}</p>
             </div>
 
             <div className="hidden text-right text-[8px] uppercase leading-5 tracking-[0.17em] text-black/45 sm:block">
@@ -105,7 +106,7 @@ export default function RuePage() {
 
             <Link
               href="/ou-je-suis?series=rue"
-              className="group/map flex w-fit min-h-12 justify-self-end items-center justify-between gap-5 border border-black bg-[#d8d4ca] px-3 py-2.5 text-black transition-colors duration-300 hover:bg-[#ff3b18] sm:min-h-14 sm:min-w-[250px] sm:gap-8 sm:px-4 sm:py-3"
+              className="group/map flex w-fit min-h-12 justify-self-end items-center justify-between gap-5 border border-black bg-[#d8d4ca] px-3 py-2.5 text-black transition-colors duration-300 hover:bg-[#ff3b18] hover:text-white focus-visible:bg-[#ff3b18] focus-visible:text-white sm:min-h-14 sm:min-w-[250px] sm:gap-8 sm:px-4 sm:py-3"
             >
               <span className="flex items-center gap-3">
                 <span className="relative flex h-3 w-3 items-center justify-center">
@@ -114,8 +115,8 @@ export default function RuePage() {
                 </span>
 
                 <span>
-                  <span className="block text-[6px] uppercase tracking-[0.18em] text-black/55 transition-colors group-hover/map:text-black/60 sm:text-[7px] sm:tracking-[0.2em]">
-                    Psychogéographie
+                  <span className="block text-[6px] uppercase tracking-[0.18em] text-black/55 transition-colors group-hover/map:text-white/80 group-focus-visible/map:text-white/80 sm:text-[7px] sm:tracking-[0.2em]">
+                    PsychoKarta
                   </span>
 
                   <span className="mt-1 block text-xs font-bold uppercase tracking-[0.08em]">

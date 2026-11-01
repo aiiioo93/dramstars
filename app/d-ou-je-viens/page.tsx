@@ -21,7 +21,7 @@ export default function DOuJeViensPage() {
       {/* 01 — LA LETTRE */}
       {/* ================================================= */}
 
-      <section className="relative min-h-[calc(100svh-64px)] bg-black px-5 py-8 text-[#f4f3ef] md:px-10 md:py-12">
+      <section className="hidden" aria-hidden="true">
         {/* REPÈRES */}
 
         <div className="mx-auto flex max-w-[1500px] items-center justify-between border-b border-white/20 pb-3 text-[7px] uppercase tracking-[0.22em] text-white/40">
@@ -98,6 +98,15 @@ export default function DOuJeViensPage() {
               </div>
             </div>
           </Link>
+        </div>
+      </section>
+
+      <section className="border-b border-black bg-white px-5 py-16 md:px-10 md:py-24">
+        <div className="mx-auto max-w-[1500px]">
+          <p className="text-[8px] uppercase tracking-[0.2em] text-black/45">Chapitre II / La lettre</p>
+          <p className="mt-8 max-w-2xl border-t border-black/20 pt-5 text-sm leading-7 text-black/60">
+            La lettre originale n’est pas encore disponible dans les fichiers du projet.
+          </p>
         </div>
       </section>
 
@@ -309,43 +318,10 @@ export default function DOuJeViensPage() {
               {section.id === "1999-2001" && (
                 <section
                   aria-label="Emplacement de la carte du chapitre II"
-                  className="border-y border-black bg-black px-5 py-20 text-[#f4f3ef] md:px-10 md:py-28"
+                  className="border-y border-black bg-white px-5 py-16 text-black md:px-10 md:py-24"
                 >
                   <div className="mx-auto max-w-[1500px]">
-                    <div className="mb-10 flex items-center justify-between gap-4 border-b border-white/20 pb-3 text-[7px] uppercase tracking-[0.2em] text-white/40">
-                      <span>Cadre cartographique / Chapitre II</span>
-                      <span>2013 — aujourd’hui</span>
-                    </div>
-
-                    <div className="grid items-start gap-12 lg:grid-cols-[0.32fr_0.68fr] lg:gap-16">
-                      <div className="lg:sticky lg:top-24">
-                        <p className="text-[7px] uppercase tracking-[0.2em] text-[#ff3b18]">
-                          Atlas en construction
-                        </p>
-                        <h2 className="mt-4 max-w-[360px] text-3xl font-bold uppercase leading-[0.92] tracking-[-0.05em] md:text-5xl">
-                          Un territoire à documenter.
-                        </h2>
-                        <p className="mt-7 max-w-[380px] text-[9px] uppercase leading-6 tracking-[0.13em] text-white/60">
-                          Le fond situe uniquement le cadre géographique demandé
-                          pour ce chapitre. Il ne représente encore ni trajet,
-                          ni origine, ni photographie validée.
-                        </p>
-
-                        <div className="mt-8 border-l border-white/25 pl-4 text-[7px] uppercase leading-5 tracking-[0.14em] text-white/40">
-                          Les futurs points proviendront uniquement des
-                          photographies numériques géolocalisées et validées.
-                        </div>
-                      </div>
-
-                      <div>
-                        <ChapterTwoMap />
-                        <p className="mt-5 max-w-3xl text-[7px] uppercase leading-5 tracking-[0.14em] text-white/40">
-                          Mise en ligne après validation des coordonnées, de
-                          l’origine du chapitre et des données de matière. Aucun
-                          point fictif n’est utilisé pour remplir la carte.
-                        </p>
-                      </div>
-                    </div>
+                    <ChapterTwoMap />
                   </div>
                 </section>
               )}

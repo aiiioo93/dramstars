@@ -75,23 +75,6 @@ export default function HeroCarousel({ images }: HeroCarouselProps) {
         </div>
       )}
 
-      {/* INFOS — même logique qu'avant */}
-      <div className="absolute left-5 top-4 z-30 text-[9px] uppercase tracking-[0.14em] md:left-8 md:top-8 md:text-[10px]">
-        Image / {String(current + 1).padStart(3, "0")}
-      </div>
-
-      <div className="absolute bottom-4 left-5 right-5 z-30 flex justify-between border-t border-white/30 pt-2 text-[8px] uppercase tracking-[0.12em] md:bottom-8 md:left-8 md:right-8 md:pt-3 md:text-[9px]">
-        <span>La dramstars</span>
-
-        {images.length > 1 ? (
-          <span>
-            {String(current + 1).padStart(2, "0")} /{" "}
-            {String(images.length).padStart(2, "0")}
-          </span>
-        ) : (
-          <span>Photographie urbaine</span>
-        )}
-      </div>
     </div>
   );
 }
